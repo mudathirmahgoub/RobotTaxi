@@ -31,7 +31,7 @@ def get_id():
 # POST '/robot_status/<id>' returns a unique id from the server
 @app.route('/robot_status/<id>', methods=['POST'])
 def post_status(id):
-    # print(request)
+    print(request)
     global unique_id
     pass
     return jsonify({'id': id})
