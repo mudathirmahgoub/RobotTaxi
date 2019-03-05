@@ -23,15 +23,15 @@ def get_id():
     global unique_id
     # acquire the lock before getting a new id
     id_lock.acquire()
-    unique_id = unique_id +  1
+    unique_id = unique_id + 1
     id_lock.release()
     return jsonify({'id': unique_id})
 
 
 # POST '/robot_status/<id>' returns a unique id from the server
-@app.route('/robot_status/<id>', methods=['POST'])
+@app.route('/robot_status/<int:id>', methods=['POST'])
 def post_status(id):
-    print(request)
+    print(request.get_json())
     global unique_id
     pass
     return jsonify({'id': id})

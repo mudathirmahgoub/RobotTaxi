@@ -10,16 +10,16 @@ class ServerTests(unittest.TestCase):
         self.assertEqual("The server is working.", test())
 
     def test_get_id(self):
-        with app.test_request_context():
-            response1 = get_id()
+        with app.test_request_context('/id', method='GET'):
+            response1 = app.dispatch_request()
             print(response1.data)
-            response2 = get_id()
+            response2 = app.dispatch_request()
             self.assertNotEqual(response1.data, response2.data)
 
     def test_post_status(self):
-        with app.test_request_context():
-            response = post_status(5)
-            print(response)
+        with app.test_request_context('/robot_status/5', method='POST',
+                                      data={'id': 5}):
+            response = app.dispatch_request()
             data = json.loads(response.data)
             self.assertEqual(data, {'id': 5})
 
