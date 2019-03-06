@@ -1,4 +1,5 @@
 import threading
+from datetime import *
 from flask import Flask, jsonify, request
 
 # initialize the server app
@@ -31,10 +32,9 @@ def get_id():
 # POST '/robot_status/<id>' returns a unique id from the server
 @app.route('/robot_status/<int:id>', methods=['POST'])
 def post_status(id):
-    print(request.get_json())
-    global unique_id
-    pass
-    return jsonify({'id': id})
+    json = request.get_json()
+    json['update_time'] = datetime.now()
+    return jsonify(json)
 
 
 if __name__ == '__main__':

@@ -18,10 +18,10 @@ class ServerTests(unittest.TestCase):
 
     def test_post_status(self):
         with app.test_request_context('/robot_status/5', method='POST',
-                                      data={'id': 5}):
+                                      json={'id': 5, 'x': 1, "y": 2}):
             response = app.dispatch_request()
             data = json.loads(response.data)
-            self.assertEqual(data, {'id': 5})
+            self.assertIn('GMT', data['update_time'])
 
     def test(self):
         with self.assertRaises(ValueError):
