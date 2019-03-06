@@ -1,6 +1,6 @@
 import threading
 from datetime import *
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort, Response
 
 # initialize the server app
 app = Flask(__name__)
@@ -9,7 +9,17 @@ app = Flask(__name__)
 id_lock = threading.Lock()
 
 # unique id initially is zero
-unique_id = 0
+app.unique_id = 0
+
+class RobotState:
+    def __init__(self, robot_id, x, y):
+        self.robot_id = robot_id
+        self.x, self.y = x, y
+        self.update_time = datetime.now()
+
+
+# global dictionary for robots that stores robot id and its state
+app.robots_dictionary = {}
 
 
 # GET '/' for testing the server
@@ -21,17 +31,20 @@ def test():
 # GET '/id' returns a unique id from the server
 @app.route('/id')
 def get_id():
-    global unique_id
     # acquire the lock before getting a new id
     id_lock.acquire()
-    unique_id = unique_id + 1
+    app.unique_id = app.unique_id + 1
+    app.robots_dictionary[app.unique_id] = None
     id_lock.release()
-    return jsonify({'id': unique_id})
+    return jsonify({'id': app.unique_id})
 
 
 # POST '/robot_status/<id>' returns a unique id from the server
-@app.route('/robot_status/<int:id>', methods=['POST'])
-def post_status(id):
+@app.route('/robot_status/<int:robot_id>', methods=['POST'])
+def post_status(robot_id):
+    # abort if robot_id does not exist
+    if robot_id not in app.robots_dictionary:
+        abort(404, {'message': 'Robot with id {0} does not exist'.format(robot_id)})
     json = request.get_json()
     json['update_time'] = datetime.now()
     return jsonify(json)
