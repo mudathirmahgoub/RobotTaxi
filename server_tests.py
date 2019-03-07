@@ -9,8 +9,8 @@ class ServerTests(unittest.TestCase):
 
     def setUp(self):
         app.robots_dictionary = {
-            1: RobotState(robot_id=1, x=1, y=1),
-            2: RobotState(robot_id=2, x=2, y=1)
+            1: RobotState(robot_id=1, x=1, y=1, angle_z_degrees=0),
+            2: RobotState(robot_id=2, x=2, y=1, angle_z_degrees=0)
         }
         app.unique_id = len(app.robots_dictionary)
 

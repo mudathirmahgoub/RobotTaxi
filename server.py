@@ -12,9 +12,9 @@ id_lock = threading.Lock()
 app.unique_id = 0
 
 class RobotState:
-    def __init__(self, robot_id, x, y):
+    def __init__(self, robot_id, x, y, angle_z_degrees):
         self.robot_id = robot_id
-        self.x, self.y = x, y
+        self.x, self.y, self.angle_z_degrees = x, y, angle_z_degrees
         self.update_time = datetime.now()
 
 
