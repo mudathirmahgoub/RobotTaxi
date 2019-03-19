@@ -10,11 +10,11 @@ function getGridData() {
     var click = 0;
 
     // iterate for rows
-    for (var row = 0; row < 10; row++) {
+    for (var row = 0; row < 9; row++) {
         data.push( [] );
 
         // iterate for cells/columns inside rows
-        for (var column = 0; column < 10; column++) {
+        for (var column = 0; column < 9; column++) {
             data[row].push({
                 x: x,
                 y: y,
@@ -46,7 +46,11 @@ var mapData = [
     {x:7, y: 1, type: 'road', shape: 'curveTopRight'},
     // second row
     {x:1, y: 2, type: 'road', shape: 'straightVertical'},
+    {x:2, y: 2, type: 'building', shape: 'buildingA'},
+    {x:3, y: 2, type: 'building', shape: 'buildingB'},
     {x:4, y: 2, type: 'road', shape: 'straightVertical'},
+    {x:5, y: 2, type: 'building', shape: 'buildingA'},
+    {x:6, y: 2, type: 'building', shape: 'buildingB'},
     {x:7, y: 2, type: 'road', shape: 'straightVertical'},
     // third row
     {x:1, y: 3, type: 'road', shape: 'tRight'},
@@ -58,7 +62,11 @@ var mapData = [
     {x:7, y: 3, type: 'road', shape: 'tLeft'},
     // fourth row
     {x:1, y: 4, type: 'road', shape: 'straightVertical'},
+    {x:2, y: 4, type: 'building', shape: 'buildingC'},
+    {x:3, y: 4, type: 'building', shape: 'buildingD'},
     {x:4, y: 4, type: 'road', shape: 'straightVertical'},
+    {x:5, y: 4, type: 'building', shape: 'buildingC'},
+    {x:6, y: 4, type: 'building', shape: 'buildingD'},
     {x:7, y: 4, type: 'road', shape: 'straightVertical'},
     // fifth row
     {x:1, y: 5, type: 'road', shape: 'curveBottomLeft'},
@@ -72,7 +80,8 @@ var mapData = [
 
 var svg = d3.select('svg')
 .attr('width', '100%')
-.attr('height', '100%');
+.attr('height', '100%')
+.style('background-color', '#707477');
 
 
 var mapGroup = svg.append('g');
@@ -81,19 +90,36 @@ mapGroup
     .data(mapData)
     .enter()
     .append('svg:image')
+    .attr('class', 'building')
     .attr('xlink:href', function(data){
-        switch (data.shape) {
-            case 'straightHorizontal': return 'images/straightHorizontal.png';
-            case 'straightVertical': return 'images/straightVertical.png';
-            case 'curveTopLeft': return 'images/curveTopLeft.png';
-            case 'curveTopRight': return 'images/curveTopRight.png';
-            case 'curveBottomLeft': return 'images/curveBottomLeft.png';
-            case 'curveBottomRight': return 'images/curveBottomRight.png';
-            case 'tTop': return 'images/tTop.png';
-            case 'tRight': return 'images/tRight.png';
-            case 'tBottom': return 'images/tBottom.png';
-            case 'tLeft': return 'images/tLeft.png';
-            case 'cross': return 'images/cross.png';
+        if(data.type ==='road') {
+            switch (data.shape) {
+                case 'straightHorizontal':
+                    return 'images/straightHorizontal.png';
+                case 'straightVertical':
+                    return 'images/straightVertical.png';
+                case 'curveTopLeft':
+                    return 'images/curveTopLeft.png';
+                case 'curveTopRight':
+                    return 'images/curveTopRight.png';
+                case 'curveBottomLeft':
+                    return 'images/curveBottomLeft.png';
+                case 'curveBottomRight':
+                    return 'images/curveBottomRight.png';
+                case 'tTop':
+                    return 'images/tTop.png';
+                case 'tRight':
+                    return 'images/tRight.png';
+                case 'tBottom':
+                    return 'images/tBottom.png';
+                case 'tLeft':
+                    return 'images/tLeft.png';
+                case 'cross':
+                    return 'images/cross.png';
+            }
+        }
+        if (data.type === 'building'){
+            return 'images/' + data.shape + '.png';
         }
     })
     .attr('x', function(data) { return data.x * cellLength; })
