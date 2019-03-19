@@ -18,8 +18,6 @@ function getGridData() {
             data[row].push({
                 x: x,
                 y: y,
-                width: 50,
-                height: 50,
                 click: click
             });
             // increment the x position
@@ -34,6 +32,8 @@ function getGridData() {
 }
 
 var gridData = getGridData();
+
+var cellLength = 50;
 
 var grid = d3.select('#grid')
 .append('svg')
@@ -51,22 +51,22 @@ var map = row.selectAll(".square")
     .data(function(d) { return d; })
     .enter()
     .append('svg:image')
-    .attr("xlink:href", "images/straight.png")
-    .attr("x", function(d) { return d.x * 50; })
-    .attr("y", function(d) { return d.y * 50; })
-    .attr("width", function(d) { return d.width ; })
-    .attr("height", function(d) { return d.height; });
+    .attr("xlink:href", "images/straightHorizontal.png")
+    .attr("x", function(d) { return d.x * cellLength; })
+    .attr("y", function(d) { return d.y * cellLength; })
+    .attr("width", function(d) { return cellLength ; })
+    .attr("height", function(d) { return cellLength; });
 
 var column = row.selectAll(".square")
     .data(function(d) { return d; })
     .enter().append("rect")
     .attr("class","square")
-    .attr("x", function(d) { return d.x * 50; })
-    .attr("y", function(d) { return d.y * 50; })
-    .attr("width", function(d) { return d.width ; })
-    .attr("height", function(d) { return d.height; })
+    .attr("x", function(d) { return d.x * cellLength; })
+    .attr("y", function(d) { return d.y * cellLength; })
+    .attr("width", function(d) { return cellLength; })
+    .attr("height", function(d) { return cellLength; })
     .style("fill", "rgba(255, 255, 255, 0)")
-    .style("stroke", "rgba(50, 50, 50, 5)")
+    .style("stroke", "rgba(cellLength, cellLength, cellLength, 5)")
     .on('click', function(d){
         console.log(d);
         d.click ++;
