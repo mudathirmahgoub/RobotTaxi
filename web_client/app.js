@@ -47,6 +47,16 @@ var row = grid.selectAll(".row")
 .attr('class', 'row');
 
 
+var map = row.selectAll(".square")
+    .data(function(d) { return d; })
+    .enter()
+    .append('svg:image')
+    .attr("xlink:href", "images/straight.png")
+    .attr("x", function(d) { return d.x * 50; })
+    .attr("y", function(d) { return d.y * 50; })
+    .attr("width", function(d) { return d.width ; })
+    .attr("height", function(d) { return d.height; });
+
 var column = row.selectAll(".square")
     .data(function(d) { return d; })
     .enter().append("rect")
@@ -55,8 +65,8 @@ var column = row.selectAll(".square")
     .attr("y", function(d) { return d.y * 50; })
     .attr("width", function(d) { return d.width ; })
     .attr("height", function(d) { return d.height; })
-    .style("fill", "#fff")
-    .style("stroke", "#222")
+    .style("fill", "rgba(255, 255, 255, 0)")
+    .style("stroke", "rgba(50, 50, 50, 5)")
     .on('click', function(d){
         console.log(d);
         d.click ++;
@@ -65,3 +75,15 @@ var column = row.selectAll(".square")
         if ((d.click)%4 == 2 ) { d3.select(this).style("fill","#F56C4E"); }
         if ((d.click)%4 == 3 ) { d3.select(this).style("fill","#838690"); }
     });
+
+var grid = d3.select('#grid')
+    .append('svg')
+    .attr('width', '100%')
+    .attr('height', '100%');
+
+
+var row = grid.selectAll(".row")
+    .data(map)
+    .enter().append('g')
+    .attr('class', 'row');
+
