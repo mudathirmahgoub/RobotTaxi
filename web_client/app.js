@@ -37,37 +37,37 @@ var cellLength = 50;
 
 var mapData = [
     // first row
-    {x:1, y: 0, type: 'road', shape: 'curveTopLeft'},
-    {x:2, y: 0, type: 'road', shape: 'straightHorizontal'},
-    {x:3, y: 0, type: 'road', shape: 'straightHorizontal'},
-    {x:4, y: 0, type: 'road', shape: 'tBottom'},
-    {x:5, y: 0, type: 'road', shape: 'straightHorizontal'},
-    {x:6, y: 0, type: 'road', shape: 'straightHorizontal'},
-    {x:7, y: 0, type: 'road', shape: 'curveTopRight'},
+    {x:1, y: 1, type: 'road', shape: 'curveTopLeft'},
+    {x:2, y: 1, type: 'road', shape: 'straightHorizontal'},
+    {x:3, y: 1, type: 'road', shape: 'straightHorizontal'},
+    {x:4, y: 1, type: 'road', shape: 'tBottom'},
+    {x:5, y: 1, type: 'road', shape: 'straightHorizontal'},
+    {x:6, y: 1, type: 'road', shape: 'straightHorizontal'},
+    {x:7, y: 1, type: 'road', shape: 'curveTopRight'},
     // second row
-    {x:1, y: 1, type: 'road', shape: 'straightVertical'},
-    {x:4, y: 1, type: 'road', shape: 'straightVertical'},
-    {x:7, y: 1, type: 'road', shape: 'straightVertical'},
+    {x:1, y: 2, type: 'road', shape: 'straightVertical'},
+    {x:4, y: 2, type: 'road', shape: 'straightVertical'},
+    {x:7, y: 2, type: 'road', shape: 'straightVertical'},
     // third row
-    {x:1, y: 2, type: 'road', shape: 'tRight'},
-    {x:2, y: 2, type: 'road', shape: 'straightHorizontal'},
-    {x:3, y: 2, type: 'road', shape: 'straightHorizontal'},
-    {x:4, y: 2, type: 'road', shape: 'cross'},
-    {x:5, y: 2, type: 'road', shape: 'straightHorizontal'},
-    {x:6, y: 2, type: 'road', shape: 'straightHorizontal'},
-    {x:7, y: 2, type: 'road', shape: 'tLeft'},
+    {x:1, y: 3, type: 'road', shape: 'tRight'},
+    {x:2, y: 3, type: 'road', shape: 'straightHorizontal'},
+    {x:3, y: 3, type: 'road', shape: 'straightHorizontal'},
+    {x:4, y: 3, type: 'road', shape: 'cross'},
+    {x:5, y: 3, type: 'road', shape: 'straightHorizontal'},
+    {x:6, y: 3, type: 'road', shape: 'straightHorizontal'},
+    {x:7, y: 3, type: 'road', shape: 'tLeft'},
     // fourth row
-    {x:1, y: 3, type: 'road', shape: 'straightVertical'},
-    {x:4, y: 3, type: 'road', shape: 'straightVertical'},
-    {x:7, y: 3, type: 'road', shape: 'straightVertical'},
+    {x:1, y: 4, type: 'road', shape: 'straightVertical'},
+    {x:4, y: 4, type: 'road', shape: 'straightVertical'},
+    {x:7, y: 4, type: 'road', shape: 'straightVertical'},
     // fifth row
-    {x:1, y: 4, type: 'road', shape: 'curveBottomLeft'},
-    {x:2, y: 4, type: 'road', shape: 'straightHorizontal'},
-    {x:3, y: 4, type: 'road', shape: 'straightHorizontal'},
-    {x:4, y: 4, type: 'road', shape: 'tTop'},
-    {x:5, y: 4, type: 'road', shape: 'straightHorizontal'},
-    {x:6, y: 4, type: 'road', shape: 'straightHorizontal'},
-    {x:7, y: 4, type: 'road', shape: 'curveBottomRight'}
+    {x:1, y: 5, type: 'road', shape: 'curveBottomLeft'},
+    {x:2, y: 5, type: 'road', shape: 'straightHorizontal'},
+    {x:3, y: 5, type: 'road', shape: 'straightHorizontal'},
+    {x:4, y: 5, type: 'road', shape: 'tTop'},
+    {x:5, y: 5, type: 'road', shape: 'straightHorizontal'},
+    {x:6, y: 5, type: 'road', shape: 'straightHorizontal'},
+    {x:7, y: 5, type: 'road', shape: 'curveBottomRight'}
 ];
 
 var svg = d3.select('svg')
