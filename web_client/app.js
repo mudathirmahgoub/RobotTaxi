@@ -36,13 +36,18 @@ var gridData = getGridData();
 var cellLength = 50;
 
 var mapData = [
-    {x:0, y: 0, type: 'road', shape: 'curveTopLeft'},
-    {x:1, y: 0, type: 'road', shape: 'straightHorizontal'},
+    // first row
+    {x:1, y: 0, type: 'road', shape: 'curveTopLeft'},
     {x:2, y: 0, type: 'road', shape: 'straightHorizontal'},
-    {x:3, y: 0, type: 'road', shape: 'tBottom'},
-    {x:4, y: 0, type: 'road', shape: 'straightHorizontal'},
+    {x:3, y: 0, type: 'road', shape: 'straightHorizontal'},
+    {x:4, y: 0, type: 'road', shape: 'tBottom'},
     {x:5, y: 0, type: 'road', shape: 'straightHorizontal'},
-    {x:6, y: 0, type: 'road', shape: 'curveTopRight'}
+    {x:6, y: 0, type: 'road', shape: 'straightHorizontal'},
+    {x:7, y: 0, type: 'road', shape: 'curveTopRight'},
+    // second row
+    {x:1, y: 1, type: 'road', shape: 'straightVertical'},
+    {x:4, y: 1, type: 'road', shape: 'straightVertical'},
+    {x:7, y: 1, type: 'road', shape: 'straightVertical'},
 ];
 
 var svg = d3.select('svg')
@@ -62,7 +67,12 @@ mapGroup
             case 'straightVertical': return 'images/straightVertical.png';
             case 'curveTopLeft': return 'images/curveTopLeft.png';
             case 'curveTopRight': return 'images/curveTopRight.png';
+            case 'curveBottomLeft': return 'images/curveBottomLeft.png';
+            case 'curveBottomRight': return 'images/curveBottomRight.png';
+            case 'tTop': return 'images/tTop.png';
+            case 'tRight': return 'images/tRight.png';
             case 'tBottom': return 'images/tBottom.png';
+            case 'tLeft': return 'images/tLeft.png';
         }
     })
     .attr('x', function(data) { return data.x * cellLength; })
