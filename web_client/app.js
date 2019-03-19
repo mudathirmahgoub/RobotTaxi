@@ -56,6 +56,18 @@ var mapData = [
     {x:5, y: 2, type: 'road', shape: 'straightHorizontal'},
     {x:6, y: 2, type: 'road', shape: 'straightHorizontal'},
     {x:7, y: 2, type: 'road', shape: 'tLeft'},
+    // fourth row
+    {x:1, y: 3, type: 'road', shape: 'straightVertical'},
+    {x:4, y: 3, type: 'road', shape: 'straightVertical'},
+    {x:7, y: 3, type: 'road', shape: 'straightVertical'},
+    // fifth row
+    {x:1, y: 4, type: 'road', shape: 'curveBottomLeft'},
+    {x:2, y: 4, type: 'road', shape: 'straightHorizontal'},
+    {x:3, y: 4, type: 'road', shape: 'straightHorizontal'},
+    {x:4, y: 4, type: 'road', shape: 'tTop'},
+    {x:5, y: 4, type: 'road', shape: 'straightHorizontal'},
+    {x:6, y: 4, type: 'road', shape: 'straightHorizontal'},
+    {x:7, y: 4, type: 'road', shape: 'curveBottomRight'}
 ];
 
 var svg = d3.select('svg')
