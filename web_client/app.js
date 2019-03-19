@@ -48,6 +48,14 @@ var mapData = [
     {x:1, y: 1, type: 'road', shape: 'straightVertical'},
     {x:4, y: 1, type: 'road', shape: 'straightVertical'},
     {x:7, y: 1, type: 'road', shape: 'straightVertical'},
+    // third row
+    {x:1, y: 2, type: 'road', shape: 'tRight'},
+    {x:2, y: 2, type: 'road', shape: 'straightHorizontal'},
+    {x:3, y: 2, type: 'road', shape: 'straightHorizontal'},
+    {x:4, y: 2, type: 'road', shape: 'cross'},
+    {x:5, y: 2, type: 'road', shape: 'straightHorizontal'},
+    {x:6, y: 2, type: 'road', shape: 'straightHorizontal'},
+    {x:7, y: 2, type: 'road', shape: 'tLeft'},
 ];
 
 var svg = d3.select('svg')
@@ -73,6 +81,7 @@ mapGroup
             case 'tRight': return 'images/tRight.png';
             case 'tBottom': return 'images/tBottom.png';
             case 'tLeft': return 'images/tLeft.png';
+            case 'cross': return 'images/cross.png';
         }
     })
     .attr('x', function(data) { return data.x * cellLength; })
