@@ -1,4 +1,5 @@
 import threading
+import json  # for reading map.json file
 from datetime import *
 from flask import Flask, jsonify, request, abort, Response
 
@@ -26,6 +27,15 @@ app.robots_dictionary = {}
 @app.route('/')
 def test():
     return "The server is working."
+
+
+# GET '/' for testing the server
+@app.route('/map')
+def get_map():
+    with open('map.json') as json_file:
+        map_data = json.load(json_file)
+        print(map_data)
+        return jsonify(map_data)
 
 
 # GET '/id' returns a unique id from the server

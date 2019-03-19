@@ -17,6 +17,12 @@ class ServerTests(unittest.TestCase):
     def test_test(self):
         self.assertEqual("The server is working.", test())
 
+    def test_get_map(self):
+        with app.test_request_context('/map', method='GET'):
+            response = app.dispatch_request()
+            map_data = json.loads(response.data)
+            self.assertNotEqual(map_data[0], None)
+
     def test_get_id(self):
         with app.test_request_context('/id', method='GET'):
             response1 = app.dispatch_request()
