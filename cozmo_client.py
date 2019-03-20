@@ -19,13 +19,12 @@ def post_status():
     print(response.json())
 
 
-while True:
-    post_status()
-    time.sleep(.01)
-#
-# def cozmo_program(robot: cozmo.robot.Robot):
-#     while True:
-#         time.sleep(.01)
-#
-#
-# cozmo.run_program(cozmo_program)
+def cozmo_program(robot: cozmo.robot.Robot):
+    while True:
+        pose = robot.pose
+        print(pose)
+        post_status()
+        time.sleep(.1)
+
+
+cozmo.run_program(cozmo_program, use_viewer=True)

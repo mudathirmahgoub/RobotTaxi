@@ -12,11 +12,23 @@ var cellLength = 50;
 d3.json('/map').then(function (mapData){
     displayMap(mapData);
     displayGrid();
-    d3.json('/robot_status').then(function(robotsData){
-        console.log(robotsData);
-        displayRobots(Object.values(robotsData));
-    });
+    updateRobotsStatus();
+    function updateRobotsStatus() {
+        d3.json('/robot_status').then(function(robotsData){
+            var values = Object.values(robotsData);
+            for (var i = 0; i < values.length ; i++) {
+                delete values[i]['update_time'];
+            }
+            console.log(values);
+            displayRobots(values);
+        });
+        setTimeout(function () {
+            updateRobotsStatus();
+        }, 100);
+    }
 });
+
+
 
 function displayMap(mapData){
 
@@ -142,19 +154,22 @@ function displayGrid() {
 
 function displayRobots(robotsData){
     var robotsGroup = svg.append('g');
-    robotsGroup
-        .selectAll('.robotsData')
-        .data(robotsData)
-        .enter()
+    var group = robotsGroup
+            .selectAll('.robotsData')
+            .data(robotsData)
+            .attr('x', function(data) { return data.x; })
+            .attr('y', function(data) { return data.y; });
+    group.enter()
         .append('svg:image')
+        .attr('x', function(data) { console.log(data); return data.x; })
+        .attr('y', function(data) { return data.y; })
         .attr('class', 'robot')
         .attr('xlink:href', function(data){
            return "images/cozmoUp.png";
         })
-        .attr('x', function(data) { console.log(data); return data.x; })
-        .attr('y', function(data) { return data.y; })
         .attr('width', function(data) { return cellLength / 3 ; })
         .attr('height', function(data) { return cellLength / 3; });
+    group.exit().remove();
 }
 
 // // dynamic data
