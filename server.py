@@ -1,7 +1,7 @@
 import threading
 import json  # for reading map.json file
 from datetime import *
-from flask import Flask, jsonify, request, abort, Response
+from flask import Flask, jsonify, request, abort
 
 # initialize the server app
 app = Flask(__name__, static_folder='app')
@@ -11,6 +11,7 @@ id_lock = threading.Lock()
 
 # unique id initially is zero
 app.unique_id = 0
+
 
 class RobotState:
     def __init__(self, robot_id, x, y, angle_z_degrees):
@@ -49,15 +50,15 @@ def get_id():
     return jsonify({'id': app.unique_id})
 
 
-# POST '/robot_status/<id>' returns a unique id from the server
+# POST '/robot_status/<id>' updates robot status and returns update time
 @app.route('/robot_status/<int:robot_id>', methods=['POST'])
 def post_status(robot_id):
     # abort if robot_id does not exist
     if robot_id not in app.robots_dictionary:
         abort(404, {'message': 'Robot with id {0} does not exist'.format(robot_id)})
-    json = request.get_json()
-    json['update_time'] = datetime.now()
-    return jsonify(json)
+    robot_state = request.get_json()
+    robot_state['update_time'] = datetime.now()
+    return jsonify(robot_state)
 
 
 if __name__ == '__main__':
