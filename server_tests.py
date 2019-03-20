@@ -32,7 +32,7 @@ class ServerTests(unittest.TestCase):
 
     def test_post_status(self):
         robot_id = 1
-        robot_state = RobotState(robot_id=1, robot_type='cozmo', x=5, y=5, angle_z_degrees=0)
+        robot_state = RobotState(robot_id=robot_id, robot_type='cozmo', x=5, y=5, angle_z_degrees=0)
         with app.test_request_context('/robot_status/{0}'.format(robot_id),
                                       method='POST',
                                       json=robot_state):
