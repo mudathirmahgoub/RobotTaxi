@@ -156,7 +156,7 @@ function displayRobots(){
         .append('svg:image')
         .attr('class', 'robot')
         .attr('xlink:href', function(data){
-           return "images/cozmoRight.png";
+           return "images/cozmoUp.png";
         })
         .attr('x', function(data) { return data.x; })
         .attr('y', function(data) { return data.y; })
