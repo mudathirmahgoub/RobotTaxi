@@ -42,6 +42,12 @@ def get_id():
     return jsonify({'id': app.unique_id})
 
 
+# GET '/robot_status' get the state of all robots
+@app.route('/robot_status', methods=['GET'])
+def get_all_robots():
+    return jsonify(app.robots_dictionary)
+
+
 # POST '/robot_status/<id>' updates robot status and returns update time
 @app.route('/robot_status/<int:robot_id>', methods=['POST'])
 def post_status(robot_id):

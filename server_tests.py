@@ -30,6 +30,12 @@ class ServerTests(unittest.TestCase):
             response2 = app.dispatch_request()
             self.assertNotEqual(response1.data, response2.data)
 
+    def test_get_all_robots(self):
+        with app.test_request_context('/robot_status', method='GET'):
+            response = app.dispatch_request()
+            json_data = json.loads(response.data)
+            self.assertEqual(2, len(json_data))
+
     def test_post_status(self):
         robot_id = 1
         robot_state = RobotState(robot_id=robot_id, robot_type='cozmo', x=5, y=5, angle_z_degrees=0)
