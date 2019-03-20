@@ -28,7 +28,6 @@ def test():
 def get_map():
     with open('map.json') as json_file:
         map_data = json.load(json_file)
-        print(map_data)
         return jsonify(map_data)
 
 
@@ -49,10 +48,12 @@ def post_status(robot_id):
     # abort if robot_id does not exist
     if robot_id not in app.robots_dictionary:
         abort(404, {'message': 'Robot with id {0} does not exist'.format(robot_id)})
-    json_data = request.get_json()
+    json_data = json.loads(request.get_json())
     robot_state = RobotState(**json_data)
     # update the time
     robot_state.update_time = datetime.now()
+    # update the dictionary
+    app.robots_dictionary[robot_id] = robot_state
     return jsonify(robot_state)
 
 

@@ -35,7 +35,7 @@ class ServerTests(unittest.TestCase):
         robot_state = RobotState(robot_id=robot_id, robot_type='cozmo', x=5, y=5, angle_z_degrees=0)
         with app.test_request_context('/robot_status/{0}'.format(robot_id),
                                       method='POST',
-                                      json=robot_state):
+                                      json=json.dumps(robot_state, cls=RobotEncoder)):
                 response = app.dispatch_request()
                 json_data = json.loads(response.data)
                 self.assertNotEqual(str(robot_state.update_time), json_data['update_time'])
