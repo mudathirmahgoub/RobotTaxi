@@ -4,7 +4,7 @@ from datetime import *
 from flask import Flask, jsonify, request, abort, Response
 
 # initialize the server app
-app = Flask(__name__)
+app = Flask(__name__, static_folder='app')
 
 # a lock for thread safe id
 id_lock = threading.Lock()
@@ -61,4 +61,4 @@ def post_status(robot_id):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=7000, host='0.0.0.0', debug=True)

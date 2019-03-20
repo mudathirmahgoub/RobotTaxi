@@ -78,7 +78,7 @@ var cellLength = 50;
 //     {x:7, y: 5, type: 'road', shape: 'curveBottomRight'}
 // ];
 
-d3.json('http://127.0.0.1:5000/map').then(function (mapData){
+d3.json('/map').then(function (mapData){
     console.log(mapData);
     displayMap(mapData);
 });
