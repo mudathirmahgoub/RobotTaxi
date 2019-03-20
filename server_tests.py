@@ -9,8 +9,8 @@ class ServerTests(unittest.TestCase):
 
     def setUp(self):
         app.robots_dictionary = {
-            1: RobotState(robot_id=1, x=1, y=1, angle_z_degrees=0),
-            2: RobotState(robot_id=2, x=2, y=1, angle_z_degrees=0)
+            1: RobotState(robot_id=1, robot_type='cozmo', x=1, y=1, angle_z_degrees=0),
+            2: RobotState(robot_id=2, robot_type='vector', x=2, y=1, angle_z_degrees=0)
         }
         app.unique_id = len(app.robots_dictionary)
 
@@ -32,12 +32,13 @@ class ServerTests(unittest.TestCase):
 
     def test_post_status(self):
         robot_id = 1
+        robot_state = RobotState(robot_id=1, robot_type='cozmo', x=5, y=5, angle_z_degrees=0)
         with app.test_request_context('/robot_status/{0}'.format(robot_id),
                                       method='POST',
-                                      json={'id': robot_id, 'x': 5, "y": 5}):
+                                      json=robot_state):
                 response = app.dispatch_request()
-                data = json.loads(response.data)
-                self.assertIn('GMT', data['update_time'])
+                json_data = json.loads(response.data)
+                self.assertNotEqual(str(robot_state.update_time), json_data['update_time'])
 
     def test(self):
         non_existent_id = 100

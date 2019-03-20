@@ -3,22 +3,30 @@ import json  # for reading map.json file
 from datetime import *
 from flask import Flask, jsonify, request, abort
 
+
+class RobotEncoder(json.JSONEncoder):
+    def default(self, json_object):
+        if isinstance(json_object, datetime):
+            return json_object.isoformat()
+        return json_object.__dict__
+
+
+class RobotState:
+    def __init__(self, robot_id, robot_type, x, y, angle_z_degrees, update_time=datetime.now()):
+        self.robot_id, self.robot_type = robot_id, robot_type
+        self.x, self.y, self.angle_z_degrees = x, y, angle_z_degrees
+        self.update_time = update_time
+
+
 # initialize the server app
 app = Flask(__name__, static_folder='app')
+app.json_encoder = RobotEncoder
 
 # a lock for thread safe id
 id_lock = threading.Lock()
 
 # unique id initially is zero
 app.unique_id = 0
-
-
-class RobotState:
-    def __init__(self, robot_id, x, y, angle_z_degrees):
-        self.robot_id = robot_id
-        self.x, self.y, self.angle_z_degrees = x, y, angle_z_degrees
-        self.update_time = datetime.now()
-
 
 # global dictionary for robots that stores robot id and its state
 app.robots_dictionary = {}
@@ -56,8 +64,10 @@ def post_status(robot_id):
     # abort if robot_id does not exist
     if robot_id not in app.robots_dictionary:
         abort(404, {'message': 'Robot with id {0} does not exist'.format(robot_id)})
-    robot_state = request.get_json()
-    robot_state['update_time'] = datetime.now()
+    json_data = request.get_json()
+    robot_state = RobotState(**json_data)
+    # update the time
+    robot_state.update_time = datetime.now()
     return jsonify(robot_state)
 
 
