@@ -69,8 +69,8 @@ function displayMap(mapData){
         })
         .attr('x', function(data) { return data.x * cellLength; })
         .attr('y', function(data) { return data.y * cellLength; })
-        .attr('width', function(data) { return cellLength ; })
-        .attr('height', function(data) { return cellLength; });
+        .attr('width', function() { return cellLength ; })
+        .attr('height', function() { return cellLength; });
 }
 
 function displayGrid() {
@@ -111,7 +111,7 @@ function displayGrid() {
         .enter().append('g')
         .attr('class', 'row');
 
-    var column = row.selectAll('.square')
+    row.selectAll('.square')
         .data(function (d) {
             return d;
         })
@@ -123,10 +123,10 @@ function displayGrid() {
         .attr('y', function (d) {
             return d.y * cellLength;
         })
-        .attr('width', function (d) {
+        .attr('width', function () {
             return cellLength;
         })
-        .attr('height', function (d) {
+        .attr('height', function () {
             return cellLength;
         })
         .style('fill', 'rgba(255, 255, 255, 0)')
@@ -155,17 +155,17 @@ function displayRobots(robotsData, robotsGroup){
             .data(robotsData);
     group.transition().duration(1000)
         .attr('x', function(data) { return data.x; })
-        .attr('y', function(data) { return data.y; })
+        .attr('y', function(data) { return data.y; });
     group.enter()
         .append('svg:image')
         .attr('x', function(data) { console.log(data); return data.x; })
         .attr('y', function(data) { return data.y; })
         .attr('class', 'robot')
-        .attr('xlink:href', function(data){
+        .attr('xlink:href', function(){
            return "images/cozmoUp.png";
         })
-        .attr('width', function(data) { return cellLength / 3 ; })
-        .attr('height', function(data) { return cellLength / 3; });
+        .attr('width', function() { return cellLength / 3 ; })
+        .attr('height', function() { return cellLength / 3; });
     group.exit().remove();
 }
 
