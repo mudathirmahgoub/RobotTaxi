@@ -45,7 +45,9 @@ def get_id():
 # GET '/robot_status' get the state of all robots
 @app.route('/robot_status', methods=['GET'])
 def get_all_robots():
-    return jsonify(app.robots_dictionary)
+    # filter out none values
+    robots = {key: value for key, value in app.robots_dictionary.items() if value is not None}
+    return jsonify(robots)
 
 
 # POST '/robot_status/<id>' updates robot status and returns update time
