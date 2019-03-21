@@ -10,17 +10,13 @@ var svg = d3.select('svg')
 var cellLength = 50;
 
 d3.json('/map').then(function (mapData){
-    displayMap(mapData);
+    displayMap(mapData.cells);
     displayGrid();
     var robotsGroup = svg.append('g');
     updateRobotsStatus();
     function updateRobotsStatus() {
         d3.json('/robot_status').then(function(robotsData){
             var values = Object.values(robotsData);
-            for (var i = 0; i < values.length ; i++) {
-                delete values[i]['update_time'];
-            }
-            console.log(values);
             displayRobots(values, robotsGroup);
         });
         setTimeout(function () {

@@ -15,13 +15,12 @@ robot_type = 'cozmo'
 def post_status(x, y, angle_z_degrees=0):
     robot_state = RobotState(robot_id, robot_type, x, y, angle_z_degrees)
     json_data = RobotEncoder().encode(robot_state)
-    response = requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
-                             headers={'Content-type': 'application/json'})
-    print(response.json())
+    requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
+                  headers={'Content-type': 'application/json'})
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
-    current_x, current_y = 0, 0
+    map_x, map_y = 0, 0
     # robot.go_to_pose(pose=cozmo.util.Pose(0, 400, 0, angle_z=degrees(0)))
     robot.drive_straight(distance=distance_inches(20), speed=speed_mmps(50), should_play_anim=False)
     while True:
