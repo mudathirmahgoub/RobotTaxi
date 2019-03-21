@@ -67,8 +67,8 @@ function displayMap(mapData){
                 return 'images/' + data.shape + '.png';
             }
         })
-        .attr('x', function(data) { return data.x * cellLength; })
-        .attr('y', function(data) { return data.y * cellLength; })
+        .attr('x', function(data) { return data.row * cellLength; })
+        .attr('y', function(data) { return data.column * cellLength; })
         .attr('width', function() { return cellLength ; })
         .attr('height', function() { return cellLength; });
 }
