@@ -12,6 +12,7 @@ var cellLength = 50;
 d3.json('/map').then(function (mapData){
     displayMap(mapData);
     displayGrid();
+    var robotsGroup = svg.append('g');
     updateRobotsStatus();
     function updateRobotsStatus() {
         d3.json('/robot_status').then(function(robotsData){
@@ -20,11 +21,11 @@ d3.json('/map').then(function (mapData){
                 delete values[i]['update_time'];
             }
             console.log(values);
-            displayRobots(values);
+            displayRobots(values, robotsGroup);
         });
         setTimeout(function () {
             updateRobotsStatus();
-        }, 100);
+        }, 1000);
     }
 });
 
@@ -152,13 +153,13 @@ function displayGrid() {
         });
 }
 
-function displayRobots(robotsData){
-    var robotsGroup = svg.append('g');
+function displayRobots(robotsData, robotsGroup){
     var group = robotsGroup
-            .selectAll('.robotsData')
-            .data(robotsData)
-            .attr('x', function(data) { return data.x; })
-            .attr('y', function(data) { return data.y; });
+            .selectAll('image')
+            .data(robotsData);
+    group.transition().duration(1000)
+        .attr('x', function(data) { return data.x; })
+        .attr('y', function(data) { return data.y; })
     group.enter()
         .append('svg:image')
         .attr('x', function(data) { console.log(data); return data.x; })

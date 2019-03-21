@@ -54,7 +54,7 @@ def post_status(robot_id):
     # abort if robot_id does not exist
     if robot_id not in app.robots_dictionary:
         abort(404, {'message': 'Robot with id {0} does not exist'.format(robot_id)})
-    json_data = json.loads(request.get_json())
+    json_data = request.get_json()
     robot_state = RobotState(**json_data)
     # update the time
     robot_state.update_time = datetime.now()

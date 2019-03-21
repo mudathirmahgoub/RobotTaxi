@@ -12,19 +12,26 @@ robot_type = 'cozmo'
 
 
 def post_status():
-    x, y, angle_z_degrees = random.randint(1,100), random.randint(1,100), 0
+    x, y, angle_z_degrees = random.randint(1, 450), random.randint(1, 450), 0
     robot_state = RobotState(robot_id, robot_type, x, y, angle_z_degrees)
-    json_data = json.dumps(robot_state, cls=RobotEncoder)
-    response = requests.post(api_url.format('robot_status/{0}').format(robot_id), json=json_data)
+    json_data = RobotEncoder().encode(robot_state)
+    print(json_data)
+    response = requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
+                             headers={'Content-type': 'application/json'})
     print(response.json())
 
 
-def cozmo_program(robot: cozmo.robot.Robot):
-    while True:
-        pose = robot.pose
-        print(pose)
-        post_status()
-        time.sleep(.1)
+while True:
+    post_status()
+    time.sleep(.1)
 
 
-cozmo.run_program(cozmo_program, use_viewer=True)
+# def cozmo_program(robot: cozmo.robot.Robot):
+#     while True:
+#         pose = robot.pose
+#         print(pose)
+#         post_status()
+#         time.sleep(.1)
+
+
+# cozmo.run_program(cozmo_program, use_viewer=True)
