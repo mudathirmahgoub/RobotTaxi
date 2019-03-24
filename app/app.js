@@ -71,7 +71,8 @@ function displayMap(mapData){
                 }
             }
             if (data.type === 'building'){
-                return 'images/' + data.shape + '.png';
+                return '';
+                // return 'images/' + data.shape + '.png';
             }
         })
         .attr('x', function(data) { return data['row'] * cellLengthPixels; })
@@ -140,7 +141,7 @@ function displayGrid() {
         .on('click', function (d) {
             console.log(d);
             d.click++;
-            if ((d.click) % 2 === 0)
+            if ((d.click) % 2 === 1)
             {
                 d3.select(this).style('fill', '#fff');
             }
