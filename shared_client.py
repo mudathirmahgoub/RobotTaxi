@@ -11,9 +11,28 @@ cell_length = world_map['cellLengthMillimeters']
 start_row, start_column = world_map['startRow'], world_map['startColumn']
 
 
-def get_map_cell(row, column):
-    cell = list(filter(lambda c: c['row'] == row and c['column'] == column, world_map['cells']))
-    return cell[0]
+def get_cell(row, column):
+    cells = [c for c in world_map['cells'] if c['row'] == row and c['column'] == column]
+    if len(cells) > 0:
+        return cells[0]
+    return None
+
+
+def get_neighbors(cell):
+    row, column = cell['row'], cell['column']
+    # get the 8 neighbors
+    neighbors = [get_cell(row - 1, column - 1), get_cell(row - 1, column), get_cell(row - 1, column + 1),
+                 get_cell(row, column - 1), get_cell(row, column + 1), get_cell(row + 1, column - 1),
+                 get_cell(row + 1, column), get_cell(row + 1, column + 1)]
+    # exclude none cells
+    neighbors = [c for c in neighbors if c]
+    return neighbors
+
+
+def get_road_neighbors(cell):
+    neighbors = get_neighbors(cell)
+    neighbors = [c for c in neighbors if c['type'] == 'road']
+    return neighbors
 
 
 class RobotClient:
@@ -35,7 +54,7 @@ class RobotClient:
     def get_cell(self):
         print(self.__dict__)
         row, column = self.x // cell_length, self.y // cell_length
-        return get_map_cell(row, column)
+        return get_cell(row, column)
 
     @abstractmethod
     def move_randomly(self):
