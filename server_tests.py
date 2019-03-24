@@ -9,8 +9,8 @@ class ServerTests(unittest.TestCase):
 
     def setUp(self):
         app.robots_dictionary = {
-            1: RobotState(robot_id=1, robot_type='cozmo', x=1, y=1, angle_z_degrees=0),
-            2: RobotState(robot_id=2, robot_type='vector', x=2, y=1, angle_z_degrees=0)
+            1: RobotState(robot_id=1, robot_type='cozmo', x=1, y=1, rotation=0),
+            2: RobotState(robot_id=2, robot_type='vector', x=2, y=1, rotation=0)
         }
         app.unique_id = len(app.robots_dictionary)
 
@@ -21,7 +21,7 @@ class ServerTests(unittest.TestCase):
         with app.test_request_context('/map', method='GET'):
             response = app.dispatch_request()
             map_data = json.loads(response.data)
-            self.assertNotEqual(map_data[0], None)
+            self.assertNotEqual(map_data['cells'][0], None)
 
     def test_get_id(self):
         with app.test_request_context('/id', method='GET'):
@@ -38,7 +38,7 @@ class ServerTests(unittest.TestCase):
 
     def test_post_status(self):
         robot_id = 1
-        robot_state = RobotState(robot_id=robot_id, robot_type='cozmo', x=5, y=5, angle_z_degrees=0)
+        robot_state = RobotState(robot_id=robot_id, robot_type='cozmo', x=5, y=5, rotation=0)
         with app.test_request_context('/robot_status/{0}'.format(robot_id),
                                       method='POST',
                                       json=robot_state):

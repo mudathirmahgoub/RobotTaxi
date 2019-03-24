@@ -5,8 +5,8 @@ class MockClient(RobotClient):
     def __init__(self):
         x = start_row * cell_length
         y = start_column * cell_length
-        angle_z_degrees = 0  # facing down
-        RobotClient.__init__(self, 'mock', x, y, angle_z_degrees)
+        rotation = 0  # facing down
+        RobotClient.__init__(self, 'mock', x, y, rotation)
 
     def move_randomly(self):
         random_neighbor = RobotClient.get_random_neighbor(self)

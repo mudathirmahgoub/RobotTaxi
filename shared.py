@@ -10,8 +10,8 @@ class RobotEncoder(json.JSONEncoder):
 
 
 class RobotState:
-    def __init__(self, robot_id, robot_type, x, y, angle_z_degrees, update_time=datetime.now()):
+    def __init__(self, robot_id, robot_type, x, y, rotation, update_time=datetime.now()):
         self.robot_id, self.robot_type = robot_id, robot_type
-        self.x, self.y, self.angle_z_degrees = x, y, angle_z_degrees
+        self.x, self.y, self.rotation = x, y, rotation
         self.update_time = update_time
 

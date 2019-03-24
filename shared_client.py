@@ -40,16 +40,16 @@ def get_road_neighbors(cell):
 
 
 class RobotClient:
-    def __init__(self, robot_type, x, y, angle_z_degrees):
+    def __init__(self, robot_type, x, y, rotation):
         id_response = requests.get(api_url.format('id'))
         self.robot_id = id_response.json()['id']
         self.robot_type = robot_type
         self.x = x
         self.y = y
-        self.angle_z_degrees = angle_z_degrees
+        self.rotation = rotation
 
     def post_status(self):
-        robot_state = RobotState(self.robot_id, self.robot_type, self.x, self.y, self.angle_z_degrees)
+        robot_state = RobotState(self.robot_id, self.robot_type, self.x, self.y, self.rotation)
         print(robot_state.__dict__)
         json_data = RobotEncoder().encode(robot_state)
         requests.post(api_url.format('robot_status/{0}').format(self.robot_id), data=json_data,
@@ -64,6 +64,20 @@ class RobotClient:
         cell = RobotClient.get_cell(self)
         neighbors = get_road_neighbors(cell)
         random_neighbor = neighbors[random.randint(0, len(neighbors) - 1)]
+        # determine the direction
+        # down
+        if random_neighbor['row'] - cell['row'] > 0:
+            self.rotation = 0
+        # up
+        if random_neighbor['row'] - cell['row'] < 0:
+            self.rotation = 180
+        # right
+        if random_neighbor['column'] - cell['column'] > 0:
+            self.rotation = -90
+        # left
+        if random_neighbor['column'] - cell['column'] < 0:
+            self.rotation = 90
+
         return random_neighbor
 
     @abstractmethod

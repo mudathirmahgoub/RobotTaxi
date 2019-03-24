@@ -164,7 +164,7 @@ function displayRobots(robotsData, robotsGroup){
         .attr('y', function(data) { return millimetersToPixels(data.y) + cellLengthPixels/5; })
         .attr('class', 'robot')
         .attr('xlink:href', function(){
-           return "images/cozmoUp.png";
+           return "images/cozmo.png";
         })
         .attr('width', function() { return cellLengthPixels / 3 ; })
         .attr('height', function() { return cellLengthPixels / 3; });
