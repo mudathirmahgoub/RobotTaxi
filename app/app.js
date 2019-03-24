@@ -5,7 +5,7 @@
 var svg = d3.select('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .style('background-color', '#707477');
+    .style('background-color', '#fff');
 
 var cellLengthPixels;
 var cellLengthMillimeters;
@@ -140,17 +140,12 @@ function displayGrid() {
         .on('click', function (d) {
             console.log(d);
             d.click++;
-            if ((d.click) % 4 === 0) {
+            if ((d.click) % 2 === 0)
+            {
                 d3.select(this).style('fill', '#fff');
             }
-            if ((d.click) % 4 === 1) {
-                d3.select(this).style('fill', '#2C93E8');
-            }
-            if ((d.click) % 4 === 2) {
-                d3.select(this).style('fill', '#F56C4E');
-            }
-            if ((d.click) % 4 === 3) {
-                d3.select(this).style('fill', '#838690');
+            else {
+                d3.select(this).style('fill', 'rgba(255, 255, 255, 0)');
             }
         });
 }
@@ -160,16 +155,12 @@ function displayRobots(robotsData, robotsGroup){
             .selectAll('image')
             .data(robotsData);
     group.transition().duration(refreshRateMilliseconds)
-        .attr('x', function(data) {
-            console.log("(" + data.x + ", " + data.y + ")");
-            console.log("(" + (data.x / cellLengthMillimeters) + ", " + (data.y / cellLengthMillimeters)  + ")");
-            console.log("(" + millimetersToPixels(data.x) + ", " + millimetersToPixels(data.y) + ")");
-            return millimetersToPixels(data.x); })
-        .attr('y', function(data) { return millimetersToPixels(data.y); })
+        .attr('x', function(data) { return millimetersToPixels(data.x) + cellLengthPixels/5; })
+        .attr('y', function(data) { return millimetersToPixels(data.y) + cellLengthPixels/5; })
     group.enter()
         .append('svg:image')
-        .attr('x', function(data) { return millimetersToPixels(data.x); })
-        .attr('y', function(data) { return millimetersToPixels(data.y); })
+        .attr('x', function(data) { return millimetersToPixels(data.x) + cellLengthPixels/5; })
+        .attr('y', function(data) { return millimetersToPixels(data.y) + cellLengthPixels/5; })
         .attr('class', 'robot')
         .attr('xlink:href', function(){
            return "images/cozmoUp.png";
@@ -178,12 +169,3 @@ function displayRobots(robotsData, robotsGroup){
         .attr('height', function() { return cellLengthPixels / 3; });
     group.exit().remove();
 }
-
-// // dynamic data
-//
-// var robotsData = [
-//     {"robot_id": 1, "x": 125, "y": 120, "angle_z_degrees": 0, "update_time": ""},
-//     {"robot_id": 2, "x": 225, "y": 120, "angle_z_degrees": 0, "update_time": ""},
-//     {"robot_id": 3, "x": 325, "y": 220, "angle_z_degrees": 0, "update_time": ""},
-//     {"robot_id": 4, "x": 425, "y": 220, "angle_z_degrees": 0, "update_time": ""}
-// ];
