@@ -9,10 +9,12 @@ var svg = d3.select('svg')
 
 var cellLengthPixels;
 var cellLengthMillimeters;
+var refreshRateMilliseconds;
 
 d3.json('/map').then(function (mapData){
     cellLengthPixels = mapData['cellLengthPixels'];
     cellLengthMillimeters = mapData['cellLengthMillimeters'];
+    refreshRateMilliseconds = mapData['refreshRateMilliseconds'];
     displayMap(mapData.cells);
     displayGrid();
     var robotsGroup = svg.append('g');
@@ -24,12 +26,11 @@ d3.json('/map').then(function (mapData){
         });
         setTimeout(function () {
             updateRobotsStatus();
-        }, 1000);
+        }, refreshRateMilliseconds);
     }
 });
 
 function millimetersToPixels(x){
-    console.log(x);
     return x / cellLengthMillimeters * cellLengthPixels;
 }
 
@@ -158,8 +159,12 @@ function displayRobots(robotsData, robotsGroup){
     var group = robotsGroup
             .selectAll('image')
             .data(robotsData);
-    group.transition().duration(1000)
-        .attr('x', function(data) { return millimetersToPixels(data.x); })
+    group.transition().duration(refreshRateMilliseconds)
+        .attr('x', function(data) {
+            console.log("(" + data.x + ", " + data.y + ")");
+            console.log("(" + (data.x / cellLengthMillimeters) + ", " + (data.y / cellLengthMillimeters)  + ")");
+            console.log("(" + millimetersToPixels(data.x) + ", " + millimetersToPixels(data.y) + ")");
+            return millimetersToPixels(data.x); })
         .attr('y', function(data) { return millimetersToPixels(data.y); })
     group.enter()
         .append('svg:image')

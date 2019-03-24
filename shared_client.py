@@ -2,12 +2,14 @@ from abc import abstractmethod
 from shared import *
 import time
 import requests
+import random
 
 # global variables
 api_url = 'http://192.168.0.12:7000/{0}'
 map_response = requests.get(api_url.format('map'))
 world_map = map_response.json()
 cell_length = world_map['cellLengthMillimeters']
+refresh_rate_milliseconds = world_map['refreshRateMilliseconds']
 start_row, start_column = world_map['startRow'], world_map['startColumn']
 
 
@@ -20,10 +22,12 @@ def get_cell(row, column):
 
 def get_neighbors(cell):
     row, column = cell['row'], cell['column']
-    # get the 8 neighbors
-    neighbors = [get_cell(row - 1, column - 1), get_cell(row - 1, column), get_cell(row - 1, column + 1),
-                 get_cell(row, column - 1), get_cell(row, column + 1), get_cell(row + 1, column - 1),
-                 get_cell(row + 1, column), get_cell(row + 1, column + 1)]
+    # get the 4 neighbors
+    neighbors = [get_cell(row - 1, column),  # top cell
+                 get_cell(row, column - 1),  # left cell
+                 get_cell(row + 1, column),  # bottom cell
+                 get_cell(row, column + 1),  # right cell
+                 ]
     # exclude none cells
     neighbors = [c for c in neighbors if c]
     return neighbors
@@ -56,6 +60,12 @@ class RobotClient:
         row, column = self.x // cell_length, self.y // cell_length
         return get_cell(row, column)
 
+    def get_random_neighbor(self):
+        cell = RobotClient.get_cell(self)
+        neighbors = get_road_neighbors(cell)
+        random_neighbor = neighbors[random.randint(0, len(neighbors) - 1)]
+        return random_neighbor
+
     @abstractmethod
     def move_randomly(self):
         pass
@@ -67,4 +77,4 @@ def loop(robot_client: RobotClient):
         robot_client.move_randomly()
         # update the robot status in the server
         robot_client.post_status()
-        time.sleep(.1)
+        time.sleep(refresh_rate_milliseconds / 1000)  # convert to seconds

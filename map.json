@@ -3,6 +3,7 @@
   "startColumn":1,
   "cellLengthPixels": 50,
   "cellLengthMillimeters": 255,
+  "refreshRateMilliseconds": 500,
   "cells":
   [
       {"row":1, "column": 1, "type": "road", "shape": "curveTopLeft"},
