@@ -162,6 +162,7 @@ function displayRobots(robotsData, robotsGroup){
             .selectAll('image')
             .data(robotsData);
     group.transition().duration(refreshRateMilliseconds)
+        .ease(d3.easeLinear)
         .attr('x', function(data) { return millimetersToPixels(data.x) + cellLengthPixels/5; })
         .attr('y', function(data) { return millimetersToPixels(data.y) + cellLengthPixels/5; })
     group.enter()
