@@ -18,16 +18,22 @@ d3.json('/map').then(function (mapData){
     displayMap(mapData.cells);
     displayGrid();
     var robotsGroup = svg.append('g');
-    updateRobotsStatus();
-    function updateRobotsStatus() {
+    d3.interval(function () {
         d3.json('/robot_status').then(function(robotsData){
             var values = Object.values(robotsData);
             displayRobots(values, robotsGroup);
         });
-        setTimeout(function () {
-            updateRobotsStatus();
-        }, refreshRateMilliseconds);
-    }
+    }, refreshRateMilliseconds);
+    // updateRobotsStatus();
+    // function updateRobotsStatus() {
+    //     d3.json('/robot_status').then(function(robotsData){
+    //         var values = Object.values(robotsData);
+    //         displayRobots(values, robotsGroup);
+    //     });
+    //     setTimeout(function () {
+    //         updateRobotsStatus();
+    //     }, refreshRateMilliseconds);
+    // }
 });
 
 function millimetersToPixels(x){
