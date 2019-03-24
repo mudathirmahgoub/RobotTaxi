@@ -160,18 +160,22 @@ function displayGrid() {
         });
 }
 
+function transformRobot(data) {
+    var xTranslate = millimetersToPixels(data.x) + cellLengthPixels/5;
+    var yTranslate = millimetersToPixels(data.y) + cellLengthPixels/5;
+    return 'translate(' + xTranslate + ',' + yTranslate + ')';
+}
+
 function displayRobots(robotsData, robotsGroup){
     var group = robotsGroup
             .selectAll('image')
             .data(robotsData);
     group.transition().duration(refreshRateMilliseconds)
         .ease(d3.easeLinear)
-        .attr('x', function(data) { return millimetersToPixels(data.x) + cellLengthPixels/5; })
-        .attr('y', function(data) { return millimetersToPixels(data.y) + cellLengthPixels/5; })
+        .attr('transform', transformRobot)
     group.enter()
         .append('svg:image')
-        .attr('x', function(data) { return millimetersToPixels(data.x) + cellLengthPixels/5; })
-        .attr('y', function(data) { return millimetersToPixels(data.y) + cellLengthPixels/5; })
+        .attr('transform', transformRobot)
         .attr('class', 'robot')
         .attr('xlink:href', function(){
            return "images/cozmo.png";
