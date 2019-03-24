@@ -7,9 +7,12 @@ var svg = d3.select('svg')
     .attr('height', '100%')
     .style('background-color', '#707477');
 
-var cellLength = 50;
+var cellLengthPixels;
+var cellLengthMillimeters;
 
 d3.json('/map').then(function (mapData){
+    cellLengthPixels = mapData['cellLengthPixels'];
+    cellLengthMillimeters = mapData['cellLengthMillimeters'];
     displayMap(mapData.cells);
     displayGrid();
     var robotsGroup = svg.append('g');
@@ -25,7 +28,10 @@ d3.json('/map').then(function (mapData){
     }
 });
 
-
+function millimetersToPixels(x){
+    console.log(x);
+    return x / cellLengthMillimeters * cellLengthPixels;
+}
 
 function displayMap(mapData){
 
@@ -67,10 +73,10 @@ function displayMap(mapData){
                 return 'images/' + data.shape + '.png';
             }
         })
-        .attr('x', function(data) { return data.row * cellLength; })
-        .attr('y', function(data) { return data.column * cellLength; })
-        .attr('width', function() { return cellLength ; })
-        .attr('height', function() { return cellLength; });
+        .attr('x', function(data) { return data['row'] * cellLengthPixels; })
+        .attr('y', function(data) { return data['column'] * cellLengthPixels; })
+        .attr('width', function() { return cellLengthPixels ; })
+        .attr('height', function() { return cellLengthPixels; });
 }
 
 function displayGrid() {
@@ -118,19 +124,18 @@ function displayGrid() {
         .enter().append('rect')
         .attr('class', 'square')
         .attr('x', function (d) {
-            return d.x * cellLength;
+            return d.x * cellLengthPixels;
         })
         .attr('y', function (d) {
-            return d.y * cellLength;
+            return d.y * cellLengthPixels;
         })
         .attr('width', function () {
-            return cellLength;
+            return cellLengthPixels;
         })
         .attr('height', function () {
-            return cellLength;
+            return cellLengthPixels;
         })
         .style('fill', 'rgba(255, 255, 255, 0)')
-        .style('stroke', 'rgba(cellLength, cellLength, cellLength, 5)')
         .on('click', function (d) {
             console.log(d);
             d.click++;
@@ -154,18 +159,18 @@ function displayRobots(robotsData, robotsGroup){
             .selectAll('image')
             .data(robotsData);
     group.transition().duration(1000)
-        .attr('x', function(data) { return data.x; })
-        .attr('y', function(data) { return data.y; });
+        .attr('x', function(data) { return millimetersToPixels(data.x); })
+        .attr('y', function(data) { return millimetersToPixels(data.y); })
     group.enter()
         .append('svg:image')
-        .attr('x', function(data) { console.log(data); return data.x; })
-        .attr('y', function(data) { return data.y; })
+        .attr('x', function(data) { return millimetersToPixels(data.x); })
+        .attr('y', function(data) { return millimetersToPixels(data.y); })
         .attr('class', 'robot')
         .attr('xlink:href', function(){
            return "images/cozmoUp.png";
         })
-        .attr('width', function() { return cellLength / 3 ; })
-        .attr('height', function() { return cellLength / 3; });
+        .attr('width', function() { return cellLengthPixels / 3 ; })
+        .attr('height', function() { return cellLengthPixels / 3; });
     group.exit().remove();
 }
 

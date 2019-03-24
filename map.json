@@ -1,6 +1,7 @@
 {
   "startRow":2,
   "startColumn":1,
+  "cellLengthPixels": 50,
   "cellLengthMillimeters": 255,
   "cells":
   [

@@ -32,6 +32,11 @@ class RobotClient:
         requests.post(api_url.format('robot_status/{0}').format(self.robot_id), data=json_data,
                       headers={'Content-type': 'application/json'})
 
+    def get_cell(self):
+        print(self.__dict__)
+        row, column = self.x // cell_length, self.y // cell_length
+        return get_map_cell(row, column)
+
     @abstractmethod
     def move_randomly(self):
         pass
