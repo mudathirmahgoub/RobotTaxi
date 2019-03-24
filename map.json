@@ -1,7 +1,7 @@
 {
   "startRow":2,
   "startColumn":1,
-  "cellLengthPixels": 50,
+  "cellLengthPixels": 80,
   "cellLengthMillimeters": 255,
   "refreshRateMilliseconds": 1000,
   "cells":
