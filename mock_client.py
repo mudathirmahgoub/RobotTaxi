@@ -14,5 +14,6 @@ class MockClient(RobotClient):
         self.y = random_neighbor['column'] * cell_length
 
 
+
 mock_client = MockClient()
 loop(mock_client)

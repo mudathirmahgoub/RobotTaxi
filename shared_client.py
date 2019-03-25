@@ -50,13 +50,13 @@ class RobotClient:
 
     def post_status(self):
         robot_state = RobotState(self.robot_id, self.robot_type, self.x, self.y, self.rotation)
-        print(robot_state.__dict__)
+        # print(robot_state.__dict__)
         json_data = RobotEncoder().encode(robot_state)
         requests.post(api_url.format('robot_status/{0}').format(self.robot_id), data=json_data,
                       headers={'Content-type': 'application/json'})
 
     def get_cell(self):
-        print(self.__dict__)
+        # print(self.__dict__)
         row, column = self.x // cell_length, self.y // cell_length
         return get_cell(row, column)
 
@@ -73,11 +73,11 @@ class RobotClient:
             self.rotation = 180
         # right
         if random_neighbor['column'] - cell['column'] > 0:
-            self.rotation = -90
+            self.rotation = 90
         # left
         if random_neighbor['column'] - cell['column'] < 0:
-            self.rotation = 90
-
+            self.rotation = -90
+        print(random_neighbor)
         return random_neighbor
 
     @abstractmethod

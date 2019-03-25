@@ -84,8 +84,8 @@ function displayMap(mapData){
                 // return 'images/' + data.shape + '.png';
             }
         })
-        .attr('x', function(data) { return data['row'] * cellLengthPixels; })
-        .attr('y', function(data) { return data['column'] * cellLengthPixels; })
+        .attr('x', function(data) { return data['column'] * cellLengthPixels; })
+        .attr('y', function(data) { return data['row'] * cellLengthPixels; })
         .attr('width', function() { return cellLengthPixels ; })
         .attr('height', function() { return cellLengthPixels; });
 }
@@ -161,8 +161,8 @@ function displayGrid() {
 }
 
 function transformRobot(data) {
-    var xTranslate = millimetersToPixels(data.x) + cellLengthPixels/5;
-    var yTranslate = millimetersToPixels(data.y) + cellLengthPixels/5;
+    var xTranslate = millimetersToPixels(data.y) + cellLengthPixels/5;
+    var yTranslate = millimetersToPixels(data.x) + cellLengthPixels/5;
     return 'translate(' + xTranslate + ',' + yTranslate + ')';
 }
 
@@ -173,6 +173,17 @@ function displayRobots(robotsData, robotsGroup){
     group.transition().duration(refreshRateMilliseconds)
         .ease(d3.easeLinear)
         .attr('transform', transformRobot)
+        .on('end', function(data){
+            var image;
+
+            switch (data.rotation){
+                case 0: image = 'images/cozmoDown.png'; break;
+                case 180: image = 'images/cozmoUp.png'; break;
+                case 90: image = 'images/cozmoRight.png'; break;
+                case -90: image = 'images/cozmoLeft.png'; break;
+            }
+            d3.select(this).attr('xlink:href', image);
+        });
     group.enter()
         .append('svg:image')
         .attr('transform', transformRobot)
