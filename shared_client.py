@@ -5,7 +5,7 @@ import requests
 import random
 
 # global variables
-api_url = 'http://192.168.0.12:7000/{0}'
+api_url = 'http://172.17.44.112:7000/{0}'
 map_response = requests.get(api_url.format('map'))
 world_map = map_response.json()
 cell_length = world_map['cellLengthMillimeters']
@@ -44,9 +44,8 @@ class RobotClient:
         id_response = requests.get(api_url.format('id'))
         self.robot_id = id_response.json()['id']
         self.robot_type = robot_type
-        self.x = x
-        self.y = y
-        self.rotation = rotation
+        self.x, self.y, self.rotation = x, y, rotation
+        self.previous_x, self.previous_y, self.previous_rotation = x, y, rotation  # for transition
 
     def post_status(self):
         robot_state = RobotState(self.robot_id, self.robot_type, self.x, self.y, self.rotation)
@@ -58,6 +57,10 @@ class RobotClient:
     def get_cell(self):
         # print(self.__dict__)
         row, column = self.x // cell_length, self.y // cell_length
+        return get_cell(row, column)
+
+    def get_previous_cell(self):
+        row, column = self.previous_x // cell_length, self.previous_y // cell_length
         return get_cell(row, column)
 
     def get_random_neighbor(self):

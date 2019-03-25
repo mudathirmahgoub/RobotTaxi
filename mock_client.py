@@ -10,8 +10,18 @@ class MockClient(RobotClient):
 
     def move_randomly(self):
         random_neighbor = RobotClient.get_random_neighbor(self)
-        self.x = random_neighbor['row'] * cell_length
-        self.y = random_neighbor['column'] * cell_length
+        if self.rotation == 0:
+            self.x = random_neighbor['row'] * cell_length + cell_length / 5
+            self.y = random_neighbor['column'] * cell_length + cell_length / 5
+        if self.rotation == 180:
+            self.x = random_neighbor['row'] * cell_length + cell_length / 5
+            self.y = random_neighbor['column'] * cell_length + 2.5 * cell_length / 5
+        if self.rotation == 90:
+            self.x = random_neighbor['row'] * cell_length + 2.5 * cell_length / 5
+            self.y = random_neighbor['column'] * cell_length + cell_length / 5
+        if self.rotation == -90:
+            self.x = random_neighbor['row'] * cell_length + cell_length / 5
+            self.y = random_neighbor['column'] * cell_length + cell_length / 5
 
 
 mock_client = MockClient()
