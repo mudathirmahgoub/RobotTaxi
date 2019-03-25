@@ -63,6 +63,21 @@ class RobotClient:
     def get_random_neighbor(self):
         cell = RobotClient.get_cell(self)
         neighbors = get_road_neighbors(cell)
+        # exclude backward cells
+        current_rotation = self.rotation
+        # down
+        if current_rotation == 0:
+            neighbors = [c for c in neighbors if c['row'] != cell['row'] - 1]
+        # up
+        if current_rotation == 180:
+            neighbors = [c for c in neighbors if c['row'] != cell['row'] + 1]
+        # left
+        if current_rotation == -90:
+            neighbors = [c for c in neighbors if c['column'] != cell['column'] + 1]
+        # right
+        if current_rotation == 90:
+            neighbors = [c for c in neighbors if c['column'] != cell['column'] - 1]
+
         random_neighbor = neighbors[random.randint(0, len(neighbors) - 1)]
         # determine the direction
         # down
