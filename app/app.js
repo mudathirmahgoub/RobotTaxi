@@ -5,10 +5,10 @@
 var svg = d3.select('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .style('background-color', '#fff')
-    .call(d3.zoom().on("zoom", function () {
-        svg.attr("transform", d3.event.transform)
-    }));
+    .style('background-color', '#fff');
+    // .call(d3.zoom().on("zoom", function () {
+    //     svg.attr("transform", d3.event.transform)
+    // }));
 
 var cellLengthPixels;
 var cellLengthMillimeters;
