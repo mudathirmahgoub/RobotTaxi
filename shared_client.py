@@ -11,6 +11,7 @@ world_map = map_response.json()
 cell_length = world_map['cellLengthMillimeters']
 refresh_rate_milliseconds = world_map['refreshRateMilliseconds']
 start_row, start_column = world_map['startRow'], world_map['startColumn']
+thresholdMillimeters = world_map['thresholdMillimeters']
 
 
 def get_cell(row, column):

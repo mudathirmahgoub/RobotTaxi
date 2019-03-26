@@ -16,8 +16,7 @@ def get_robot_coordinates(map_x, map_y):
 
 class CozmoClient(RobotClient):
     def __init__(self, robot: cozmo.robot.Robot):
-        x = start_row * cell_length
-        y = start_column * cell_length + cell_length / 5
+        x, y = get_map_coordinates(Pose(0, 0, 0, angle_z=Angle(degrees=0)))
         angle_z_degrees = 0  # facing down
         self.robot = robot
         self.current_action: cozmo.Action = None
@@ -29,17 +28,52 @@ class CozmoClient(RobotClient):
             map_x, map_y = RobotClient.get_random_destination(self)
             robot_x, robot_y = get_robot_coordinates(map_x, map_y)
             pose = self.robot.pose
-            if abs(pose.position.x - robot_x) > 0:
+            if abs(pose.position.x - robot_x) > thresholdMillimeters:
                 function = self.robot.drive_straight
                 arguments = {
-                    'distance': distance_mm(cell_length),
+                    'distance': distance_mm(abs(pose.position.x - robot_x)),
                     'speed': speed_mmps(cell_length),
                     'should_play_anim': False}
                 self.actions_queue.append((function, arguments))
+            if pose.position.y - robot_y > thresholdMillimeters:
+                function = self.robot.turn_in_place
+                # down
+                if self.previous_rotation == 0:
+                    arguments = {'angle': Angle(degrees=-90)}  # turn right
+                # up
+                elif self.previous_rotation == 180:
+                    arguments = {'angle': Angle(degrees=90)}  # turn left
+                else:
+                    arguments = {'angle': Angle(degrees=0)}
+                self.actions_queue.append((function, arguments))
+                function = self.robot.drive_straight
+                arguments = {
+                    'distance': distance_mm(abs(pose.position.y - robot_y)),
+                    'speed': speed_mmps(cell_length),
+                    'should_play_anim': False}
+                self.actions_queue.append((function, arguments))
+            if pose.position.y - robot_y < - thresholdMillimeters:
+                function = self.robot.turn_in_place
+                # down
+                if self.previous_rotation == 0:
+                    arguments = {'angle': Angle(degrees=90)}  # turn left
+                # up
+                elif self.previous_rotation == 180:
+                    arguments = {'angle': Angle(degrees=-90)}  # turn right
+                else:
+                    arguments = {'angle': Angle(degrees=0)}
+                self.actions_queue.append((function, arguments))
+                function = self.robot.drive_straight
+                arguments = {
+                    'distance': distance_mm(abs(pose.position.y - robot_y)),
+                    'speed': speed_mmps(cell_length),
+                    'should_play_anim': False}
+                self.actions_queue.append((function, arguments))
+                self.previous_rotation = self.rotation
         else:
             if not self.current_action or self.current_action.is_completed:
                 (function, arguments) = self.actions_queue.popleft()
-                function(**arguments)
+                self.current_action = function(**arguments)
             
         pose = self.robot.pose
         self.x, self.y = get_map_coordinates(pose)
