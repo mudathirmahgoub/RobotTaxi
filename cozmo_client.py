@@ -4,13 +4,14 @@ from cozmo.util import *
 
 
 def get_coordinates(pose: Pose):
-    return pose.position.y, pose.position.x
+    return pose.position.x + start_row * cell_length, \
+           pose.position.y + start_column * cell_length + cell_length / 5
 
 
 class CozmoClient(RobotClient):
     def __init__(self, robot: cozmo.robot.Robot):
         x = start_row * cell_length
-        y = start_column * cell_length
+        y = start_column * cell_length + cell_length / 5
         angle_z_degrees = 0  # facing down
         self.robot = robot
         self.current_action: cozmo.Action = None
@@ -29,4 +30,4 @@ def cozmo_program(robot: cozmo.robot.Robot):
     loop(cozmo_client)
 
 
-cozmo.run_program(cozmo_program, use_viewer=True)
+cozmo.run_program(cozmo_program, use_viewer=False)
