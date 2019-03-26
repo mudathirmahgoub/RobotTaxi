@@ -1,6 +1,7 @@
 from shared_client import *
 import cozmo
 from cozmo.util import *
+from collections import deque
 
 
 def get_map_coordinates(pose: Pose):
@@ -20,16 +21,25 @@ class CozmoClient(RobotClient):
         angle_z_degrees = 0  # facing down
         self.robot = robot
         self.current_action: cozmo.Action = None
+        self.actions_queue = deque()
         RobotClient.__init__(self, 'cozmo', x, y, angle_z_degrees)
 
     def move_randomly(self):
-        if not self.current_action or self.current_action.is_completed:
+        if len(self.actions_queue) == 0:
             map_x, map_y = RobotClient.get_random_destination(self)
             robot_x, robot_y = get_robot_coordinates(map_x, map_y)
             pose = self.robot.pose
             if abs(pose.position.x - robot_x) > 0:
-                self.current_action = self.robot.drive_straight(distance=distance_mm(cell_length),
-                                                                speed=speed_mmps(cell_length), should_play_anim=False)
+                function = self.robot.drive_straight
+                arguments = {
+                    'distance': distance_mm(cell_length),
+                    'speed': speed_mmps(cell_length),
+                    'should_play_anim': False}
+                self.actions_queue.append((function, arguments))
+        else:
+            if not self.current_action or self.current_action.is_completed:
+                (function, arguments) = self.actions_queue.popleft()
+                function(**arguments)
             
         pose = self.robot.pose
         self.x, self.y = get_map_coordinates(pose)
