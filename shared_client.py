@@ -98,6 +98,27 @@ class RobotClient:
         print(random_neighbor)
         return random_neighbor
 
+    def get_random_destination(self):
+        random_neighbor = RobotClient.get_random_neighbor(self)
+        # down
+        if self.rotation == 0:
+            destination_x = random_neighbor['row'] * cell_length + cell_length / 5
+            destination_y = random_neighbor['column'] * cell_length + cell_length / 5
+        # up
+        if self.rotation == 180:
+            destination_x = random_neighbor['row'] * cell_length + 2.5 * cell_length / 5
+            destination_y = random_neighbor['column'] * cell_length + 2.5 * cell_length / 5
+        # right
+        if self.rotation == 90:
+            destination_x = random_neighbor['row'] * cell_length + 2.5 * cell_length / 5
+            destination_y = random_neighbor['column'] * cell_length + cell_length / 5
+        # left
+        if self.rotation == -90:
+            destination_x = random_neighbor['row'] * cell_length + cell_length / 5
+            destination_y = random_neighbor['column'] * cell_length + 2.5 * cell_length / 5
+
+        return destination_x, destination_y
+
     @abstractmethod
     def move_randomly(self):
         pass
