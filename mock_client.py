@@ -16,11 +16,8 @@ class MockClient(RobotClient):
             self.y = random_neighbor['column'] * cell_length + cell_length / 5
         # up
         if self.rotation == 180:
+            self.x = random_neighbor['row'] * cell_length + 2.5 * cell_length / 5
             self.y = random_neighbor['column'] * cell_length + 2.5 * cell_length / 5
-            if random_neighbor['shape'] == 'straightVertical':
-                self.x = random_neighbor['row'] * cell_length + cell_length / 5
-            else:
-                self.x = random_neighbor['row'] * cell_length + 2.5 * cell_length / 5
         # right
         if self.rotation == 90:
             self.x = random_neighbor['row'] * cell_length + 2.5 * cell_length / 5
@@ -28,10 +25,7 @@ class MockClient(RobotClient):
         # left
         if self.rotation == -90:
             self.x = random_neighbor['row'] * cell_length + cell_length / 5
-            if random_neighbor['shape'] == 'straightHorizontal':
-                self.y = random_neighbor['column'] * cell_length + cell_length / 5
-            else:
-                self.y = random_neighbor['column'] * cell_length + 2.5* cell_length / 5
+            self.y = random_neighbor['column'] * cell_length + 2.5 * cell_length / 5
 
 
 mock_client = MockClient()
