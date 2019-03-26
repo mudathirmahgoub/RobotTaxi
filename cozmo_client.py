@@ -18,8 +18,8 @@ class CozmoClient(RobotClient):
 
     def move_randomly(self):
         if not self.current_action or self.current_action.is_completed:
-            self.current_action = self.robot.drive_straight(distance=distance_inches(20),
-                                                            speed=speed_mmps(50), should_play_anim=False)
+            self.current_action = self.robot.drive_straight(distance=distance_mm(cell_length),
+                                                            speed=speed_mmps(cell_length), should_play_anim=False)
         pose = self.robot.pose
         self.x, self.y = get_coordinates(pose)
 
