@@ -4,7 +4,7 @@
   "cellLengthPixels": 80,
   "cellLengthMillimeters": 255,
   "refreshRateMilliseconds": 1000,
-  "thresholdMillimeters": 50,
+  "thresholdMillimeters": 20,
   "cells":
   [
       {"column":1, "row": 1, "type": "road", "shape": "curveTopLeft"},

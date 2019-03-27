@@ -24,10 +24,14 @@ class CozmoClient(RobotClient):
         RobotClient.__init__(self, 'cozmo', x, y, angle_z_degrees)
 
     def move_randomly(self):
-        if len(self.actions_queue) == 0:
+        if len(self.actions_queue) == 0 \
+                and (not self.current_action or self.current_action.is_completed):
             map_x, map_y = RobotClient.get_random_destination(self)
             robot_x, robot_y = get_robot_coordinates(map_x, map_y)
             pose = self.robot.pose
+            print('Pos = ({0}, {1})'.format(pose.position.x, pose.position.y))
+            print('(map_x, map_y) = ({0}, {1})'.format(map_x, map_y))
+            print('(robot_x, robot_y) = ({0}, {1})'.format(robot_x, robot_y))
             if abs(pose.position.x - robot_x) > thresholdMillimeters:
                 function = self.robot.drive_straight
                 arguments = {

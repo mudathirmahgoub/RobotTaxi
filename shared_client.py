@@ -96,11 +96,11 @@ class RobotClient:
         # left
         if random_neighbor['column'] - cell['column'] < 0:
             self.rotation = -90
-        print(random_neighbor)
         return random_neighbor
 
     def get_random_destination(self):
         random_neighbor = RobotClient.get_random_neighbor(self)
+        print('Destination cell: {0}'.format(random_neighbor))
         # down
         if self.rotation == 0:
             destination_x = random_neighbor['row'] * cell_length + cell_length / 5
