@@ -110,16 +110,16 @@ class RobotClient:
             y = cell['column'] * cell_length + cell_length / 5
         # up
         if self.rotation == 180:
-            x = cell['row'] * cell_length + 2.5 * cell_length / 5
-            y = cell['column'] * cell_length + 2.5 * cell_length / 5
-        # right
-        if self.rotation == 90:
-            x = cell['row'] * cell_length + 2.5 * cell_length / 5
-            y = cell['column'] * cell_length + cell_length / 5
+            x = cell['row'] * cell_length + 4 * cell_length / 5
+            y = cell['column'] * cell_length + 4 * cell_length / 5
         # left
+        if self.rotation == 90:
+            x = cell['row'] * cell_length + 4 * cell_length / 5
+            y = cell['column'] * cell_length + cell_length / 5
+        # right
         if self.rotation == -90:
             x = cell['row'] * cell_length + cell_length / 5
-            y = cell['column'] * cell_length + 2.5 * cell_length / 5
+            y = cell['column'] * cell_length + 4 * cell_length / 5
         return x, y
 
     @abstractmethod

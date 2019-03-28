@@ -28,20 +28,19 @@ class CozmoClient(RobotClient):
                 and (not self.current_action or self.current_action.is_completed):
             map_x, map_y = RobotClient.get_random_destination(self)
             robot_x, robot_y = get_robot_coordinates(map_x, map_y)
-            pose = self.robot.pose
-            print('Pos = ({0}, {1})'.format(pose.position.x, pose.position.y))
+            print('Pos = ({0}, {1})'.format(self.x, self.y))
             print('(robot_x, robot_y) = ({0}, {1})'.format(robot_x, robot_y))
             print('(map_x, map_y) = ({0}, {1})'.format(map_x, map_y))
 
-            if abs(pose.position.x - robot_x) > thresholdMillimeters:
+            if abs(self.x - map_x) > thresholdMillimeters:
                 function = self.robot.drive_straight
                 arguments = {
-                    'distance': distance_mm(abs(pose.position.x - robot_x)),
+                    'distance': distance_mm(abs(self.x - map_x)),
                     'speed': speed_mmps(cell_length),
                     'should_play_anim': False}
                 self.actions_queue.append((function, arguments))
 
-            if pose.position.y - robot_y > thresholdMillimeters:
+            if self.y - map_y > thresholdMillimeters:
                 function = self.robot.turn_in_place
                 # down
                 if self.previous_rotation == 0:
@@ -54,12 +53,12 @@ class CozmoClient(RobotClient):
                 self.actions_queue.append((function, arguments))
                 function = self.robot.drive_straight
                 arguments = {
-                    'distance': distance_mm(abs(pose.position.y - robot_y)),
+                    'distance': distance_mm(abs(self.y - map_y)),
                     'speed': speed_mmps(cell_length),
                     'should_play_anim': False}
                 self.actions_queue.append((function, arguments))
 
-            if pose.position.y - robot_y < - thresholdMillimeters:
+            if self.y - map_y < - thresholdMillimeters:
                 function = self.robot.turn_in_place
                 # down
                 if self.previous_rotation == 0:
@@ -72,20 +71,18 @@ class CozmoClient(RobotClient):
                 self.actions_queue.append((function, arguments))
                 function = self.robot.drive_straight
                 arguments = {
-                    'distance': distance_mm(abs(pose.position.y - robot_y)),
+                    'distance': distance_mm(abs(self.y - map_y)),
                     'speed': speed_mmps(cell_length),
                     'should_play_anim': False}
                 self.actions_queue.append((function, arguments))
 
             self.previous_rotation = self.rotation
+            self.x, self.y = map_x, map_y
         else:
             if not self.current_action or self.current_action.is_completed:
                 (function, arguments) = self.actions_queue.popleft()
                 self.current_action = function(**arguments)
             
-        pose = self.robot.pose
-        self.x, self.y = get_map_coordinates(pose)
-
 
 def cozmo_program(robot: cozmo.robot.Robot):
     cozmo_client = CozmoClient(robot)
