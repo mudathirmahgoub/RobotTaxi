@@ -30,8 +30,9 @@ class CozmoClient(RobotClient):
             robot_x, robot_y = get_robot_coordinates(map_x, map_y)
             pose = self.robot.pose
             print('Pos = ({0}, {1})'.format(pose.position.x, pose.position.y))
-            print('(map_x, map_y) = ({0}, {1})'.format(map_x, map_y))
             print('(robot_x, robot_y) = ({0}, {1})'.format(robot_x, robot_y))
+            print('(map_x, map_y) = ({0}, {1})'.format(map_x, map_y))
+
             if abs(pose.position.x - robot_x) > thresholdMillimeters:
                 function = self.robot.drive_straight
                 arguments = {
@@ -39,6 +40,7 @@ class CozmoClient(RobotClient):
                     'speed': speed_mmps(cell_length),
                     'should_play_anim': False}
                 self.actions_queue.append((function, arguments))
+
             if pose.position.y - robot_y > thresholdMillimeters:
                 function = self.robot.turn_in_place
                 # down
@@ -56,6 +58,7 @@ class CozmoClient(RobotClient):
                     'speed': speed_mmps(cell_length),
                     'should_play_anim': False}
                 self.actions_queue.append((function, arguments))
+
             if pose.position.y - robot_y < - thresholdMillimeters:
                 function = self.robot.turn_in_place
                 # down
@@ -73,7 +76,8 @@ class CozmoClient(RobotClient):
                     'speed': speed_mmps(cell_length),
                     'should_play_anim': False}
                 self.actions_queue.append((function, arguments))
-                self.previous_rotation = self.rotation
+
+            self.previous_rotation = self.rotation
         else:
             if not self.current_action or self.current_action.is_completed:
                 (function, arguments) = self.actions_queue.popleft()

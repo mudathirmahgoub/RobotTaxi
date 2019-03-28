@@ -101,24 +101,26 @@ class RobotClient:
     def get_random_destination(self):
         random_neighbor = RobotClient.get_random_neighbor(self)
         print('Destination cell: {0}'.format(random_neighbor))
+        return self.get_cell_coordinates(random_neighbor)
+
+    def get_cell_coordinates(self, cell):
         # down
         if self.rotation == 0:
-            destination_x = random_neighbor['row'] * cell_length + cell_length / 5
-            destination_y = random_neighbor['column'] * cell_length + cell_length / 5
+            x = cell['row'] * cell_length + cell_length / 5
+            y = cell['column'] * cell_length + cell_length / 5
         # up
         if self.rotation == 180:
-            destination_x = random_neighbor['row'] * cell_length + 2.5 * cell_length / 5
-            destination_y = random_neighbor['column'] * cell_length + 2.5 * cell_length / 5
+            x = cell['row'] * cell_length + 2.5 * cell_length / 5
+            y = cell['column'] * cell_length + 2.5 * cell_length / 5
         # right
         if self.rotation == 90:
-            destination_x = random_neighbor['row'] * cell_length + 2.5 * cell_length / 5
-            destination_y = random_neighbor['column'] * cell_length + cell_length / 5
+            x = cell['row'] * cell_length + 2.5 * cell_length / 5
+            y = cell['column'] * cell_length + cell_length / 5
         # left
         if self.rotation == -90:
-            destination_x = random_neighbor['row'] * cell_length + cell_length / 5
-            destination_y = random_neighbor['column'] * cell_length + 2.5 * cell_length / 5
-
-        return destination_x, destination_y
+            x = cell['row'] * cell_length + cell_length / 5
+            y = cell['column'] * cell_length + 2.5 * cell_length / 5
+        return x, y
 
     @abstractmethod
     def move_randomly(self):
