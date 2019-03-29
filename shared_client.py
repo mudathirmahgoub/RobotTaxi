@@ -104,22 +104,43 @@ class RobotClient:
         return self.get_cell_coordinates(random_neighbor)
 
     def get_cell_coordinates(self, cell):
-        # down
-        if self.rotation == 0:
-            x = cell['row'] * cell_length + cell_length / 5
-            y = cell['column'] * cell_length + cell_length / 5
-        # up
-        if self.rotation == 180:
+        # initialization
+        x, y = self.x, self.y
+        # down down
+        if self.previous_rotation == 0 and self.rotation == 0:
+            x = cell['row'] * cell_length + 2.5 * cell_length / 5
+
+        # down left
+        if self.previous_rotation == 0 and self.rotation == 90:
+            x = cell['row'] * cell_length + 4 * cell_length / 5
+            y = cell['column'] * cell_length + 2.5 * cell_length / 5
+
+        # left left
+        if self.previous_rotation == 90 and self.rotation == 90:
+            y = cell['column'] * cell_length + 2.5 * cell_length / 5
+
+        # left up
+        if self.previous_rotation == 90 and self.rotation == 180:
             x = cell['row'] * cell_length + 4 * cell_length / 5
             y = cell['column'] * cell_length + 4 * cell_length / 5
-        # left
-        if self.rotation == 90:
+
+        # up up
+        if self.previous_rotation == 180 and self.rotation == 180:
             x = cell['row'] * cell_length + 4 * cell_length / 5
-            y = cell['column'] * cell_length + cell_length / 5
-        # right
-        if self.rotation == -90:
-            x = cell['row'] * cell_length + cell_length / 5
+        # up right
+        if self.previous_rotation == 180 and self.rotation == -90:
+            x = cell['row'] * cell_length + 2.5 * cell_length / 5
             y = cell['column'] * cell_length + 4 * cell_length / 5
+
+        # right right
+        if self.previous_rotation == -90 and self.rotation == -90:
+            y = cell['column'] * cell_length + 4 * cell_length / 5
+
+        # right down
+        if self.previous_rotation == -90 and self.rotation == 0:
+            x = cell['row'] * cell_length + 2.5 * cell_length / 5
+            y = cell['column'] * cell_length + 2.5 * cell_length / 5
+
         return x, y
 
     @abstractmethod

@@ -10,41 +10,17 @@
       {"column":1, "row": 1, "type": "road", "shape": "curveTopLeft"},
       {"column":2, "row": 1, "type": "road", "shape": "straightHorizontal"},
       {"column":3, "row": 1, "type": "road", "shape": "straightHorizontal"},
-      {"column":4, "row": 1, "type": "road", "shape": "tBottom"},
-      {"column":5, "row": 1, "type": "road", "shape": "straightHorizontal"},
-      {"column":6, "row": 1, "type": "road", "shape": "straightHorizontal"},
-      {"column":7, "row": 1, "type": "road", "shape": "curveTopRight"},
+      {"column":4, "row": 1, "type": "road", "shape": "curveTopRight"},
 
       {"column":1, "row": 2, "type": "road", "shape": "straightVertical"},
-      {"column":2, "row": 2, "type": "building", "shape": "buildingA"},
-      {"column":3, "row": 2, "type": "building", "shape": "buildingB"},
       {"column":4, "row": 2, "type": "road", "shape": "straightVertical"},
-      {"column":5, "row": 2, "type": "building", "shape": "buildingA"},
-      {"column":6, "row": 2, "type": "building", "shape": "buildingB"},
-      {"column":7, "row": 2, "type": "road", "shape": "straightVertical"},
+      {"column":1, "row": 3, "type": "road", "shape": "straightVertical"},
+      {"column":4, "row": 3, "type": "road", "shape": "straightVertical"},
 
-      {"column":1, "row": 3, "type": "road", "shape": "tRight"},
-      {"column":2, "row": 3, "type": "road", "shape": "straightHorizontal"},
-      {"column":3, "row": 3, "type": "road", "shape": "straightHorizontal"},
-      {"column":4, "row": 3, "type": "road", "shape": "cross"},
-      {"column":5, "row": 3, "type": "road", "shape": "straightHorizontal"},
-      {"column":6, "row": 3, "type": "road", "shape": "straightHorizontal"},
-      {"column":7, "row": 3, "type": "road", "shape": "tLeft"},
 
-      {"column":1, "row": 4, "type": "road", "shape": "straightVertical"},
-      {"column":2, "row": 4, "type": "building", "shape": "buildingC"},
-      {"column":3, "row": 4, "type": "building", "shape": "buildingD"},
-      {"column":4, "row": 4, "type": "road", "shape": "straightVertical"},
-      {"column":5, "row": 4, "type": "building", "shape": "buildingC"},
-      {"column":6, "row": 4, "type": "building", "shape": "buildingD"},
-      {"column":7, "row": 4, "type": "road", "shape": "straightVertical"},
-
-      {"column":1, "row": 5, "type": "road", "shape": "curveBottomLeft"},
-      {"column":2, "row": 5, "type": "road", "shape": "straightHorizontal"},
-      {"column":3, "row": 5, "type": "road", "shape": "straightHorizontal"},
-      {"column":4, "row": 5, "type": "road", "shape": "tTop"},
-      {"column":5, "row": 5, "type": "road", "shape": "straightHorizontal"},
-      {"column":6, "row": 5, "type": "road", "shape": "straightHorizontal"},
-      {"column":7, "row": 5, "type": "road", "shape": "curveBottomRight"}
+      {"column":1, "row": 4, "type": "road", "shape": "curveBottomLeft"},
+      {"column":2, "row": 4, "type": "road", "shape": "straightHorizontal"},
+      {"column":3, "row": 4, "type": "road", "shape": "straightHorizontal"},
+      {"column":4, "row": 4, "type": "road", "shape": "curveBottomRight"}
     ]
 }
