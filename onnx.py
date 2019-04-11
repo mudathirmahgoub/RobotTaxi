@@ -14,12 +14,16 @@ small_turn = 20
 image_class = None
 processing = False
 
+api_url = 'http://192.168.0.12:7000/{0}'
+id_response = requests.get(api_url.format('id'))
+robot_id = id_response.json()['id']
+
 
 def post_status(robot: cozmo.robot.Robot):
     x, y = robot.pose.position.x, robot.pose.position.y
-    robot_state = RobotState(1, 'cozmo', x, y, 0)
+    robot_state = RobotState(robot_id, 'cozmo', x, y, 0)
     json_data = RobotEncoder().encode(robot_state)
-    requests.post(api_url.format('robot_status/{0}').format(1), data=json_data,
+    requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
                   headers={'Content-type': 'application/json'})
     Timer(0.1, post_status, kwargs={'robot': robot}).start()
 
