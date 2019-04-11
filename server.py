@@ -70,8 +70,9 @@ def classify_image(robot_id):
     if file.filename == '':
         abort(500, {'message': 'No content is uploaded'})
     if file and allowed_file(file.filename):
-        client_directory = app.upload_directory + '/' + str(app.unique_id)
+        client_directory = app.upload_directory + '/' + str(robot_id)
         file.save(os.path.join(client_directory, 'current_image.jpeg'))
+        matlab_engine.workspace['directory'] = client_directory
         matlab_engine.classify_image(nargout=0)
         image_class = matlab_engine.eval('class')
         print(image_class)
