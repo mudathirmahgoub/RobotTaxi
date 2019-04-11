@@ -1,15 +1,20 @@
 import threading
 from flask import Flask, jsonify, request, abort
 from shared import *
-from werkzeug.utils import secure_filename
 import os
+import matlab.engine
+
+# matlab.engine.shareEngine('DeepLearning')
+matlab_engine = matlab.engine.connect_matlab('DeepLearning')
+
 
 # initialize the server app
 app = Flask(__name__, static_folder='app')
 app.upload_directory = 'data'
 app.config['UPLOAD_FOLDER'] = 'data'
-app.config['MAX_CONTENT_LENGTH'] = 12288
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 app.json_encoder = RobotEncoder
+app.allowed_extensions = {'jpeg'}
 
 # a lock for thread safe id
 id_lock = threading.Lock()
@@ -19,6 +24,11 @@ app.unique_id = 0
 
 # global dictionary for robots that stores robot id and its state
 app.robots_dictionary = {}
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.allowed_extensions
 
 
 # GET '/' for testing the server
@@ -47,6 +57,26 @@ def get_id():
         os.makedirs(client_directory)
     id_lock.release()
     return jsonify({'id': app.unique_id})
+
+
+@app.route('/classify_image/<int:robot_id>', methods=['POST'])
+def classify_image(robot_id):
+    if robot_id not in app.robots_dictionary:
+        abort(404, {'message': f'Robot with id {robot_id} does not exist'})
+
+    if len(request.files) != 1:
+        abort(500, {'message': 'A single image is allowed in the request'})
+    file = next(request.files.values())
+    if file.filename == '':
+        abort(500, {'message': 'No content is uploaded'})
+    if file and allowed_file(file.filename):
+        client_directory = app.upload_directory + '/' + str(app.unique_id)
+        file.save(os.path.join(client_directory, 'current_image.jpeg'))
+        matlab_engine.classify_image(nargout=0)
+        image_class = matlab_engine.eval('class')
+        print(image_class)
+        return jsonify({'id': robot_id, 'image_class': image_class})
+    abort(500, {'message': f'file {file.filename} not allowed'})
 
 
 # GET '/robot_status' get the state of all robots

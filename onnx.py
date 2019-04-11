@@ -3,8 +3,6 @@ import time
 import matlab.engine
 from threading import *
 from shared_client import *
-names = matlab.engine.find_matlab()
-print(names)
 # matlab.engine.shareEngine('DeepLearning')
 matlab_engine = matlab.engine.connect_matlab('DeepLearning')
 
@@ -14,7 +12,7 @@ small_turn = 20
 image_class = None
 processing = False
 
-api_url = 'http://192.168.0.12:7000/{0}'
+api_url = 'http://192.168.0.27:7000/{0}'
 id_response = requests.get(api_url.format('id'))
 robot_id = id_response.json()['id']
 
