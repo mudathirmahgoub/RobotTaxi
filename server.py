@@ -73,8 +73,7 @@ def classify_image(robot_id):
         client_directory = app.upload_directory + '/' + str(robot_id)
         file.save(os.path.join(client_directory, 'current_image.jpeg'))
         matlab_engine.workspace['directory'] = client_directory
-        matlab_engine.classify_image(nargout=0)
-        image_class = matlab_engine.eval('class')
+        image_class = matlab_engine.classify_image(client_directory)
         print(image_class)
         return jsonify({'id': robot_id, 'image_class': image_class})
     abort(500, {'message': f'file {file.filename} not allowed'})
