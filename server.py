@@ -1,10 +1,14 @@
 import threading
 from flask import Flask, jsonify, request, abort
 from shared import *
-
+from werkzeug.utils import secure_filename
+import os
 
 # initialize the server app
 app = Flask(__name__, static_folder='app')
+app.upload_directory = 'data'
+app.config['UPLOAD_FOLDER'] = 'data'
+app.config['MAX_CONTENT_LENGTH'] = 12288
 app.json_encoder = RobotEncoder
 
 # a lock for thread safe id
@@ -38,6 +42,9 @@ def get_id():
     id_lock.acquire()
     app.unique_id = app.unique_id + 1
     app.robots_dictionary[app.unique_id] = None
+    client_directory = app.upload_directory + '/' + str(app.unique_id)
+    if not os.path.exists(client_directory):
+        os.makedirs(client_directory)
     id_lock.release()
     return jsonify({'id': app.unique_id})
 
