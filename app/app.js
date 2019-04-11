@@ -161,9 +161,12 @@ function displayGrid() {
 }
 
 function transformRobot(data) {
-    var xTranslate = millimetersToPixels(data.y) + cellLengthPixels + cellLengthPixels / 5;
-    var yTranslate = millimetersToPixels(data.x) + 2 * cellLengthPixels - cellLengthPixels / 4;
-    return 'translate(' + xTranslate + ',' + yTranslate + ')';
+    var cosine = Math.cos(- Math.PI / 180 * data.rotation) * cellLengthPixels / 3;
+    var sine =   Math.sin(- Math.PI / 180 * data.rotation) * cellLengthPixels / 3;
+    var xTranslate = millimetersToPixels(data.y) + cellLengthPixels + cellLengthPixels;
+    var yTranslate = millimetersToPixels(data.x) + 2 * cellLengthPixels - cellLengthPixels;
+    var rotate = 'rotate(' + (- data.rotation) + ')';
+    return 'translate(' + xTranslate + ',' + yTranslate + ') ' + rotate;
 }
 
 function displayRobots(robotsData, robotsGroup){
@@ -172,25 +175,12 @@ function displayRobots(robotsData, robotsGroup){
             .data(robotsData);
     group.transition().duration(refreshRateMilliseconds)
         .ease(d3.easeLinear)
-        .attr('transform', transformRobot)
-        .on('end', function(data){
-            var image;
-
-            switch (data.rotation){
-                case 0: image = 'images/cozmoDown.png'; break;
-                case 180: image = 'images/cozmoUp.png'; break;
-                case 90: image = 'images/cozmoRight.png'; break;
-                case -90: image = 'images/cozmoLeft.png'; break;
-            }
-            d3.select(this).attr('xlink:href', image);
-        });
+        .attr('transform', transformRobot);
     group.enter()
         .append('svg:image')
         .attr('transform', transformRobot)
         .attr('class', 'robot')
-        .attr('xlink:href', function(){
-           return "images/cozmo.png";
-        })
+        .attr('xlink:href', 'images/cozmo.png')
         .attr('width', function() { return cellLengthPixels / 3 ; })
         .attr('height', function() { return cellLengthPixels / 3; });
     group.exit().remove();

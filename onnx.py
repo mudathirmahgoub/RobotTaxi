@@ -20,8 +20,8 @@ robot_id = id_response.json()['id']
 
 
 def post_status(robot: cozmo.robot.Robot):
-    x, y = robot.pose.position.x, robot.pose.position.y
-    robot_state = RobotState(robot_id, 'cozmo', x, y, 0)
+    x, y, rotation = robot.pose.position.x, robot.pose.position.y, robot.pose.rotation.angle_z.degrees
+    robot_state = RobotState(robot_id, 'cozmo', x, y, rotation)
     json_data = RobotEncoder().encode(robot_state)
     requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
                   headers={'Content-type': 'application/json'})
