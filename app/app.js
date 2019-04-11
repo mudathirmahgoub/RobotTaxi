@@ -163,9 +163,13 @@ function displayGrid() {
 function transformRobot(data) {
     var cosine = Math.cos(- Math.PI / 180 * data.rotation) * cellLengthPixels / 3;
     var sine =   Math.sin(- Math.PI / 180 * data.rotation) * cellLengthPixels / 3;
-    var xTranslate = millimetersToPixels(data.y) + cellLengthPixels + cellLengthPixels;
-    var yTranslate = millimetersToPixels(data.x) + 2 * cellLengthPixels - cellLengthPixels;
-    var rotate = 'rotate(' + (- data.rotation) + ')';
+    console.log(data);
+    console.log("sine:" + sine);
+    console.log("cosine:" + cosine);
+
+    var xTranslate = millimetersToPixels(data.y + 95.25) + cellLengthPixels - cellLengthPixels / 6;
+    var yTranslate = millimetersToPixels(data.x) + 2 * cellLengthPixels - cellLengthPixels / 3;
+    var rotate = 'rotate(' + (- data.rotation) + ',' + cellLengthPixels/6.0 + ',' + cellLengthPixels /6.0 + ')';
     return 'translate(' + xTranslate + ',' + yTranslate + ') ' + rotate;
 }
 
