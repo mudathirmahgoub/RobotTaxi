@@ -161,8 +161,8 @@ function displayGrid() {
 }
 
 function transformRobot(data) {
-    var xTranslate = millimetersToPixels(data.y);
-    var yTranslate = millimetersToPixels(data.x);
+    var xTranslate = millimetersToPixels(data.y) + cellLengthPixels + cellLengthPixels / 5;
+    var yTranslate = millimetersToPixels(data.x) + 2 * cellLengthPixels - cellLengthPixels / 4;
     return 'translate(' + xTranslate + ',' + yTranslate + ')';
 }
 

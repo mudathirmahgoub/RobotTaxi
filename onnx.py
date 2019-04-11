@@ -21,7 +21,7 @@ def post_status(robot: cozmo.robot.Robot):
     json_data = RobotEncoder().encode(robot_state)
     requests.post(api_url.format('robot_status/{0}').format(1), data=json_data,
                   headers={'Content-type': 'application/json'})
-    Timer(0.1, post_status, kwargs={robot: robot}).start()
+    Timer(0.1, post_status, kwargs={'robot': robot}).start()
 
 
 def on_new_camera_image(evt, **kwargs):
@@ -49,7 +49,7 @@ wheels_speeds = {
 def cozmo_program(robot: cozmo.robot.Robot):
     global image_class, processing
     robot.camera.image_stream_enabled = True
-    Timer(0.1, post_status, kwargs={robot: robot}).start()
+    Timer(0.1, post_status, kwargs={'robot': robot}).start()
     # robot.add_event_handler(cozmo.world.EvtNewCameraImage, on_new_camera_image)
     # global_robot.drive_wheels(left_speed, right_speed)
     while True:
