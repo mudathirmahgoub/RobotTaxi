@@ -3,7 +3,7 @@ import os
 
 number_of_images = 10  # total number of the same image
 directory = 'training_images'  # directory for training images
-image_class = 'turn_left'  # the image class or label
+image_class = 'straight'  # the image class or label
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
@@ -16,7 +16,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
     # get the image number of the last jpeg file
     files = [file for file in os.listdir(class_directory) if file.endswith('.jpeg')]
-    if len(files) == 0:
+    if len(files) > 0:
         files.sort()
         last_name = files[-1].replace('.jpeg', '')
         image_number = int(last_name)
