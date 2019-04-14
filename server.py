@@ -1,6 +1,7 @@
 import threading
 from flask import Flask, jsonify, request, abort
 from shared import *
+from PIL import Image
 import os
 import matlab.engine
 
