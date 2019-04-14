@@ -28,7 +28,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
         robot.world.wait_for(cozmo.world.EvtNewCameraImage)
         image = robot.world.latest_image.raw_image
         image = image.resize((224, 224))
-        file_name = "{:03d}.jpeg".format(image_number + index)
+        file_name = "{:04d}.jpeg".format(image_number + index)
         image.save(f"{class_directory}/{file_name}", "JPEG")
 
 
