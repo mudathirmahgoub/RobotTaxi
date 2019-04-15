@@ -29,7 +29,7 @@ turn = 20
 image_class = None
 processing = False
 
-api_url = 'http://192.168.0.12:7000/{0}'
+api_url = 'http://192.168.0.19:7000/{0}'
 id_response = requests.get(api_url.format('id'))
 robot_id = id_response.json()['id']
 
