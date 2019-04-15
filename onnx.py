@@ -34,13 +34,14 @@ def post_image(image):
 
 wheels_speeds = {
     'straight': (left_speed, right_speed),
+    'cross': (left_speed, right_speed),
     'corner-left': (turn, right_speed),
     'corner-right': (left_speed, turn),
     'turn-left': (left_speed - small_turn, right_speed + small_turn),
     'turn-right': (left_speed + small_turn, right_speed - small_turn),
     'stop': (0, 0),
-    't-left-far': (turn, right_speed),
-    't-left-right': (turn, right_speed),
+    'turn-left-left': (- turn, right_speed),
+    't-left-right': (left_speed, - turn),
 }
 
 
