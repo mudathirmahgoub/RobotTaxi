@@ -3,7 +3,7 @@ import os
 
 number_of_images = 10  # total number of the same image
 directory = 'training_images'  # directory for training images
-image_class = 'stop'  # the image class or label
+image_class = 'turn-right-right'  # the image class or label
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
