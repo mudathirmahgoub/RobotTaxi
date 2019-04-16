@@ -1,164 +1,62 @@
-from shared_client import *
 import cozmo
-from cozmo.util import *
-from collections import deque
+from threading import *
+from shared_client import *
+from io import BytesIO
 
 
-def get_map_coordinates(pose: Pose):
-    return pose.position.x + start_row * cell_length, \
-           pose.position.y + start_column * cell_length + cell_length / 5
+left_speed, right_speed = 50, 50
+big_turn = 50
+small_turn = 5
+turn = 20
+image_class = None
+
+id_response = requests.get(api_url.format('id'))
+robot_id = id_response.json()['id']
 
 
-def get_robot_coordinates(map_x, map_y):
-    return map_x - start_row * cell_length, \
-           map_y - start_column * cell_length - cell_length / 5
+def post_status(robot: cozmo.robot.Robot):
+    x, y, rotation = robot.pose.position.x, robot.pose.position.y, robot.pose.rotation.angle_z.degrees
+    robot_state = RobotState(robot_id, 'cozmo', x, y, rotation)
+    json_data = RobotEncoder().encode(robot_state)
+    requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
+                  headers={'Content-type': 'application/json'})
+    Timer(0.1, post_status, kwargs={'robot': robot}).start()
 
 
-class CozmoClient(RobotClient):
-    def __init__(self, robot: cozmo.robot.Robot):
-        x, y = get_map_coordinates(Pose(0, 0, 0, angle_z=Angle(degrees=0)))
-        angle_z_degrees = 0  # facing down
-        self.robot = robot
-        self.current_action: cozmo.Action = None
-        self.actions_queue = deque()
-        RobotClient.__init__(self, 'cozmo', x, y, angle_z_degrees)
+def post_image(image):
+    image_io = BytesIO()
+    image.save(image_io, 'JPEG')
+    image_io.seek(0)
+    files = {'test.jpeg': ('test.jpeg', image_io, 'multipart/form-data')}
+    response = requests.post(api_url.format('classify_image/{0}').format(robot_id), files=files)
+    return response.json()['image_class']
 
-    def move_randomly(self):
-        if len(self.actions_queue) == 0 \
-                and (not self.current_action or self.current_action.is_completed):
-            map_x, map_y = RobotClient.get_random_destination(self)
-            robot_x, robot_y = get_robot_coordinates(map_x, map_y)
-            print('Pos = ({0}, {1})'.format(self.x, self.y))
-            print('(robot_x, robot_y) = ({0}, {1})'.format(robot_x, robot_y))
-            print('(map_x, map_y) = ({0}, {1})'.format(map_x, map_y))
 
-            # down down
-            if self.previous_rotation == 0 and self.rotation == 0:
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.x - map_x)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
+wheels_speeds = {
+    'straight': (left_speed, right_speed),
+    'cross': (left_speed, right_speed),
+    'corner-left': (turn + small_turn, right_speed),
+    'corner-right': (left_speed, turn),
+    'turn-left': (left_speed - small_turn, right_speed + small_turn),
+    'turn-right': (left_speed + small_turn, right_speed - small_turn),
+    'stop': (0, 0),
+    'turn-left-left': (turn, right_speed),
+    'turn-right-right': (left_speed , turn),
+}
 
-            # down left
-            if self.previous_rotation == 0 and self.rotation == 90:
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.x - map_x)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-                function = self.robot.turn_in_place
-                arguments = {'angle': Angle(degrees=90)}  # turn left
-                self.actions_queue.append((function, arguments))
-
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.y - map_y)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-            # left left
-            if self.previous_rotation == 90 and self.rotation == 90:
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.y - map_y)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-            # left up
-            if self.previous_rotation == 90 and self.rotation == 180:
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.y - map_y)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-                function = self.robot.turn_in_place
-                arguments = {'angle': Angle(degrees=90)}  # turn left
-                self.actions_queue.append((function, arguments))
-
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.x - map_x)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-            # up up
-            if self.previous_rotation == 180 and self.rotation == 180:
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.x - map_x)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-            # up right
-            if self.previous_rotation == 180 and self.rotation == -90:
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.x - map_x)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-                function = self.robot.turn_in_place
-                arguments = {'angle': Angle(degrees=90)}  # turn left
-                self.actions_queue.append((function, arguments))
-
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.y - map_y)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-            # right right
-            if self.previous_rotation == -90 and self.rotation == -90:
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.y - map_y)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-            # right down
-            if self.previous_rotation == -90 and self.rotation == 0:
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.y - map_y)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-                function = self.robot.turn_in_place
-                arguments = {'angle': Angle(degrees=90)}  # turn left
-                self.actions_queue.append((function, arguments))
-
-                function = self.robot.drive_straight
-                arguments = {
-                    'distance': distance_mm(abs(self.x - map_x)),
-                    'speed': speed_mmps(cell_length),
-                    'should_play_anim': False}
-                self.actions_queue.append((function, arguments))
-
-            self.previous_rotation = self.rotation
-            self.x, self.y = map_x, map_y
-        else:
-            if not self.current_action or self.current_action.is_completed:
-                (function, arguments) = self.actions_queue.popleft()
-                self.current_action = function(**arguments)
-            
 
 def cozmo_program(robot: cozmo.robot.Robot):
-    cozmo_client = CozmoClient(robot)
-    loop(cozmo_client)
+    global image_class
+    robot.camera.image_stream_enabled = True
+    Timer(0.1, post_status, kwargs={'robot': robot}).start()
+    while True:
+        robot.world.wait_for(cozmo.world.EvtNewCameraImage)
+        image = robot.world.latest_image.raw_image
+        image = image.resize((224, 224))
+        image_class = post_image(image)
+        (left, right) = wheels_speeds.get(image_class, (0, 0))
+        print(f'{image_class}: ({left},{right})')
+        robot.drive_wheels(left, right)
 
 
 cozmo.run_program(cozmo_program, use_viewer=True)
