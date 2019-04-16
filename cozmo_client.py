@@ -41,7 +41,7 @@ wheels_speeds = {
     'turn-right': (left_speed + small_turn, right_speed - small_turn),
     'stop': (0, 0),
     'turn-left-left': (turn, right_speed),
-    'turn-right-right': (left_speed , turn),
+    'turn-right-right': (left_speed, turn),
 }
 
 
