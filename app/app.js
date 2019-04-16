@@ -163,7 +163,7 @@ function displayGrid() {
 function transformRobot(data) {
     var xTranslate = millimetersToPixels(data.y + 95.25) + cellLengthPixels - cellLengthPixels / 6;
     var yTranslate = millimetersToPixels(data.x) + 2 * cellLengthPixels - cellLengthPixels / 3;
-    var rotate = 'rotate(' + (- data.rotation) + ',' + cellLengthPixels/6.0 + ',' + cellLengthPixels /6.0 + ')';
+    var rotate = 'rotate(' + (- data.rotation) + ',' + cellLengthPixels/3.0 + ',' + cellLengthPixels/3.0+ ')';
     return 'translate(' + xTranslate + ',' + yTranslate + ') ' + rotate;
 }
 
@@ -179,7 +179,7 @@ function displayRobots(robotsData, robotsGroup){
         .attr('transform', transformRobot)
         .attr('class', 'robot')
         .attr('xlink:href', 'images/cozmo.png')
-        .attr('width', function() { return cellLengthPixels / 3 ; })
-        .attr('height', function() { return cellLengthPixels / 3; });
+        .attr('width', function() { return cellLengthPixels / 3.0 ; })
+        .attr('height', function() { return cellLengthPixels / 3.0 ; });
     group.exit().remove();
 }
