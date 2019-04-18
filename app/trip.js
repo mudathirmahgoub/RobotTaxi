@@ -82,6 +82,18 @@ function displayMap(mapData){
         .attr('y', function(data) { return data['row'] * cellLengthPixels; })
         .attr('width', function() { return cellLengthPixels ; })
         .attr('height', function() { return cellLengthPixels; });
+
+    var mapGroup = svg.append('g');
+    mapGroup
+        .selectAll('.startingPoint')
+        .data(mapData)
+        .enter()
+        .append('svg:image')
+        .attr('xlink:href', 'images/startingPoint.png')
+        .attr('x', function(data) { return data['column'] * cellLengthPixels  +cellLengthPixels / 4; })
+        .attr('y', function(data) { return data['row'] * cellLengthPixels + cellLengthPixels / 4; })
+        .attr('width', function() { return cellLengthPixels / 2; })
+        .attr('height', function() { return cellLengthPixels / 2; });
 }
 
 function displayGrid() {
