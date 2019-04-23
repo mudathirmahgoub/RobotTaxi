@@ -1,7 +1,5 @@
 'use strict';
 
-//based on http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html
-
 var svg = d3.select('svg')
     .attr('width', '100%')
     .attr('height', '100%')
@@ -14,6 +12,9 @@ var cellLengthPixels;
 var cellLengthMillimeters;
 var refreshRateMilliseconds;
 
+var startImages;
+var destinationImages;
+var mapColumnsCount;
 var clicks = 0;
 
 var gridData;
@@ -22,6 +23,7 @@ d3.json('/map').then(function (mapData){
     cellLengthPixels = mapData['cellLengthPixels'];
     cellLengthMillimeters = mapData['cellLengthMillimeters'];
     refreshRateMilliseconds = mapData['refreshRateMilliseconds'];
+    mapColumnsCount = mapData['mapColumnsCount'];
     displayMap(mapData.cells);
     displayGrid();
     var robotsGroup = svg.append('g');
@@ -45,7 +47,7 @@ function displayMap(mapData){
         .data(mapData)
         .enter()
         .append('svg:image')
-        .attr('class', 'building')
+        .attr('class', 'mapGroup')
         .attr('xlink:href', function(data){
             if(data.type ==='road') {
                 switch (data.shape) {
@@ -83,20 +85,42 @@ function displayMap(mapData){
         .attr('width', function() { return cellLengthPixels ; })
         .attr('height', function() { return cellLengthPixels; });
 
-    var mapGroup = svg.append('g');
-    mapGroup
-        .selectAll('.startingPoint')
+    var startGroup = svg.append('g');
+    startGroup
+        .selectAll('.startGroup')
         .data(mapData)
         .enter()
         .append('svg:image')
+        .attr('class', 'startGroup')
         .attr('xlink:href', 'images/startingPoint.png')
         .attr('x', function(data) { return data['column'] * cellLengthPixels  +cellLengthPixels / 4; })
         .attr('y', function(data) { return data['row'] * cellLengthPixels + cellLengthPixels / 4; })
         .attr('width', function() { return cellLengthPixels / 2; })
-        .attr('height', function() { return cellLengthPixels / 2; });
+        .attr('height', function() { return cellLengthPixels / 2; })
+        .attr('style', 'visibility: hidden');
+
+    startImages = startGroup.selectAll('.startGroup')._groups[0];
+
+
+    var destinationGroup = svg.append('g');
+    destinationGroup
+        .selectAll('.destinationGroup')
+        .data(mapData)
+        .enter()
+        .append('svg:image')
+        .attr('class', 'destinationGroup')
+        .attr('xlink:href', 'images/destination.png')
+        .attr('x', function(data) { return data['column'] * cellLengthPixels  +cellLengthPixels / 4; })
+        .attr('y', function(data) { return data['row'] * cellLengthPixels + cellLengthPixels / 4; })
+        .attr('width', function() { return cellLengthPixels / 2; })
+        .attr('height', function() { return cellLengthPixels / 2; })
+        .attr('style', 'visibility: hidden');
+
+    destinationImages = destinationGroup.selectAll('.destinationGroup')._groups[0];
 }
 
 function displayGrid() {
+//based on http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html
 
     function getGridData() {
         var data = [];
@@ -152,35 +176,45 @@ function displayGrid() {
             return cellLengthPixels;
         })
         .style('fill', 'rgba(255, 255, 255, 0)')
-        .on('click', function (d) {
-            console.log(d);
+        .on('click', function (data) {
+
+            console.log(data);
 
             clicks = (clicks + 1) % 3;
-
-
             if(clicks === 0){
-                gridData.forEach(function (data) {
-                    data.isStartingPoint = false;
-                    data.isDestination = false;
+                d3.selectAll(startImages).style('visibility', 'hidden');
+                d3.selectAll(destinationImages).style('visibility', 'hidden');
+                gridData.forEach(function (row) {
+                    row.forEach(function (column) {
+                        column.isStartingPoint = false;
+                        column.isDestination = false;
+                    });
                 } );
 
                 row.selectAll('.square')
                     .style('fill', 'rgba(255, 255, 255, 0)');
             }
 
-            if(clicks === 1){
-                d.isStartingPoint = true;
-            }
-            if(clicks === 2){
-                d.isDestination = true;
-            }
+
             // starting point
-            if (d.isStartingPoint && ! d.isDestination){
-                d3.select(this).style('fill', '#fff');
+            if (clicks === 1 && ! data.isDestination){
+                // d3.select(this).style('fill', '#fff');
+                data.isStartingPoint = true;
+                var element = startImages[data.y * mapColumnsCount + data.x];
+                d3.select(element).style('visibility', 'visible');
+            }
+            if (clicks === 1 && data.isDestination){
+                clicks = clicks - 1;
             }
             // destination
-            if (d.isDestination && ! d.isStartingPoint){
-                d3.select(this).style('fill', '#f00');
+            if (clicks === 2 && ! data.isStartingPoint){
+                // d3.select(this).style('fill', '#f00');
+                data.isDestination = true;
+                var element = destinationImages[data.y * mapColumnsCount + data.x];
+                d3.select(element).style('visibility', 'visible');
+            }
+            if (clicks === 2 && data.isStartingPoint){
+                clicks = clicks - 1;
             }
         });
 }

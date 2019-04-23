@@ -5,8 +5,20 @@
   "cellLengthMillimeters": 255,
   "refreshRateMilliseconds": 1000,
   "thresholdMillimeters": 20,
+  "mapColumnsCount": 9,
   "cells":
   [
+    {"column":0, "row": 0, "type": "building", "shape": "buildingC"},
+    {"column":1, "row": 0, "type": "building", "shape": "buildingA"},
+    {"column":2, "row": 0, "type": "building", "shape": "buildingB"},
+    {"column":3, "row": 0, "type": "building", "shape": "buildingA"},
+    {"column":4, "row": 0, "type": "building", "shape": "buildingB"},
+    {"column":5, "row": 0, "type": "building", "shape": "buildingA"},
+    {"column":6, "row": 0, "type": "building", "shape": "buildingB"},
+    {"column":7, "row": 0, "type": "building", "shape": "buildingA"},
+    {"column":8, "row": 0, "type": "building", "shape": "buildingD"},
+
+    {"column":0, "row": 1, "type": "building", "shape": "buildingD"},
     {"column":1, "row": 1, "type": "road", "shape": "curveTopLeft"},
     {"column":2, "row": 1, "type": "road", "shape": "straightHorizontal"},
     {"column":3, "row": 1, "type": "road", "shape": "straightHorizontal"},
@@ -14,7 +26,9 @@
     {"column":5, "row": 1, "type": "road", "shape": "straightHorizontal"},
     {"column":6, "row": 1, "type": "road", "shape": "straightHorizontal"},
     {"column":7, "row": 1, "type": "road", "shape": "curveTopRight"},
+    {"column":8, "row": 1, "type": "building", "shape": "buildingC"},
 
+    {"column":0, "row": 2, "type": "building", "shape": "buildingC"},
     {"column":1, "row": 2, "type": "road", "shape": "straightVertical"},
     {"column":2, "row": 2, "type": "building", "shape": "buildingA"},
     {"column":3, "row": 2, "type": "building", "shape": "buildingB"},
@@ -22,7 +36,9 @@
     {"column":5, "row": 2, "type": "building", "shape": "buildingA"},
     {"column":6, "row": 2, "type": "building", "shape": "buildingB"},
     {"column":7, "row": 2, "type": "road", "shape": "straightVertical"},
+    {"column":8, "row": 2, "type": "building", "shape": "buildingD"},
 
+    {"column":0, "row": 3, "type": "building", "shape": "buildingD"},
     {"column":1, "row": 3, "type": "road", "shape": "tRight"},
     {"column":2, "row": 3, "type": "road", "shape": "straightHorizontal"},
     {"column":3, "row": 3, "type": "road", "shape": "straightHorizontal"},
@@ -30,7 +46,9 @@
     {"column":5, "row": 3, "type": "road", "shape": "straightHorizontal"},
     {"column":6, "row": 3, "type": "road", "shape": "straightHorizontal"},
     {"column":7, "row": 3, "type": "road", "shape": "tLeft"},
+    {"column":8, "row": 3, "type": "building", "shape": "buildingC"},
 
+    {"column":0, "row": 4, "type": "building", "shape": "buildingC"},
     {"column":1, "row": 4, "type": "road", "shape": "straightVertical"},
     {"column":2, "row": 4, "type": "building", "shape": "buildingC"},
     {"column":3, "row": 4, "type": "building", "shape": "buildingD"},
@@ -38,13 +56,26 @@
     {"column":5, "row": 4, "type": "building", "shape": "buildingC"},
     {"column":6, "row": 4, "type": "building", "shape": "buildingD"},
     {"column":7, "row": 4, "type": "road", "shape": "straightVertical"},
+    {"column":8, "row": 4, "type": "building", "shape": "buildingD"},
 
+    {"column":0, "row": 5, "type": "building", "shape": "buildingD"},
     {"column":1, "row": 5, "type": "road", "shape": "curveBottomLeft"},
     {"column":2, "row": 5, "type": "road", "shape": "straightHorizontal"},
     {"column":3, "row": 5, "type": "road", "shape": "straightHorizontal"},
     {"column":4, "row": 5, "type": "road", "shape": "tTop"},
     {"column":5, "row": 5, "type": "road", "shape": "straightHorizontal"},
     {"column":6, "row": 5, "type": "road", "shape": "straightHorizontal"},
-    {"column":7, "row": 5, "type": "road", "shape": "curveBottomRight"}
+    {"column":7, "row": 5, "type": "road", "shape": "curveBottomRight"},
+    {"column":8, "row": 5, "type": "building", "shape": "buildingC"},
+
+    {"column":0, "row": 6, "type": "building", "shape": "buildingC"},
+    {"column":1, "row": 6, "type": "building", "shape": "buildingA"},
+    {"column":2, "row": 6, "type": "building", "shape": "buildingB"},
+    {"column":3, "row": 6, "type": "building", "shape": "buildingA"},
+    {"column":4, "row": 6, "type": "building", "shape": "buildingB"},
+    {"column":5, "row": 6, "type": "building", "shape": "buildingA"},
+    {"column":6, "row": 6, "type": "building", "shape": "buildingB"},
+    {"column":7, "row": 6, "type": "building", "shape": "buildingA"},
+    {"column":8, "row": 6, "type": "building", "shape": "buildingD"}
   ]
 }
