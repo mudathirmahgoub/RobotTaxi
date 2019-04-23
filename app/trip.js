@@ -17,6 +17,8 @@ var destinationImages;
 var mapColumnsCount;
 var clicks = 0;
 
+var mapCells;
+
 var gridData;
 
 d3.json('/map').then(function (mapData){
@@ -24,7 +26,8 @@ d3.json('/map').then(function (mapData){
     cellLengthMillimeters = mapData['cellLengthMillimeters'];
     refreshRateMilliseconds = mapData['refreshRateMilliseconds'];
     mapColumnsCount = mapData['mapColumnsCount'];
-    displayMap(mapData.cells);
+    mapCells = mapData.cells;
+    displayMap(mapCells);
     displayGrid();
     var robotsGroup = svg.append('g');
     d3.interval(function () {
@@ -177,9 +180,11 @@ function displayGrid() {
         })
         .style('fill', 'rgba(255, 255, 255, 0)')
         .on('click', function (data) {
-
+            var index = data.y * mapColumnsCount + data.x;
             console.log(data);
-
+            if(mapCells[index].type==="building"){
+                return;
+            }
             clicks = (clicks + 1) % 3;
             if(clicks === 0){
                 d3.selectAll(startImages).style('visibility', 'hidden');
@@ -200,7 +205,7 @@ function displayGrid() {
             if (clicks === 1 && ! data.isDestination){
                 // d3.select(this).style('fill', '#fff');
                 data.isStartingPoint = true;
-                var element = startImages[data.y * mapColumnsCount + data.x];
+                var element = startImages[index];
                 d3.select(element).style('visibility', 'visible');
             }
             if (clicks === 1 && data.isDestination){
@@ -210,7 +215,7 @@ function displayGrid() {
             if (clicks === 2 && ! data.isStartingPoint){
                 // d3.select(this).style('fill', '#f00');
                 data.isDestination = true;
-                var element = destinationImages[data.y * mapColumnsCount + data.x];
+                var element = destinationImages[index];
                 d3.select(element).style('visibility', 'visible');
             }
             if (clicks === 2 && data.isStartingPoint){
