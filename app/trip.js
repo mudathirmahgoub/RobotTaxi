@@ -21,6 +21,13 @@ var mapCells;
 
 var gridData;
 
+var trip = {
+    status: undefined, // or started, finished
+    start: undefined,
+    end: undefined,
+    robotType: undefined
+};
+
 d3.json('/map').then(function (mapData){
     cellLengthPixels = mapData['cellLengthPixels'];
     cellLengthMillimeters = mapData['cellLengthMillimeters'];
@@ -122,6 +129,24 @@ function displayMap(mapData){
     destinationImages = destinationGroup.selectAll('.destinationGroup')._groups[0];
 }
 
+function resetTrip(row) {
+
+    trip.start = undefined;
+    trip.end = undefined;
+
+    d3.selectAll(startImages).style('visibility', 'hidden');
+    d3.selectAll(destinationImages).style('visibility', 'hidden');
+    gridData.forEach(function (row) {
+        row.forEach(function (column) {
+            column.isStartingPoint = false;
+            column.isDestination = false;
+        });
+    });
+
+    row.selectAll('.square')
+        .style('fill', 'rgba(255, 255, 255, 0)');
+}
+
 function displayGrid() {
 //based on http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html
 
@@ -187,17 +212,7 @@ function displayGrid() {
             }
             clicks = (clicks + 1) % 3;
             if(clicks === 0){
-                d3.selectAll(startImages).style('visibility', 'hidden');
-                d3.selectAll(destinationImages).style('visibility', 'hidden');
-                gridData.forEach(function (row) {
-                    row.forEach(function (column) {
-                        column.isStartingPoint = false;
-                        column.isDestination = false;
-                    });
-                } );
-
-                row.selectAll('.square')
-                    .style('fill', 'rgba(255, 255, 255, 0)');
+                resetTrip(row);
             }
 
 
@@ -207,12 +222,14 @@ function displayGrid() {
                 data.isStartingPoint = true;
                 var element = startImages[index];
                 d3.select(element).style('visibility', 'visible');
+                trip.start = {row : data.y, column: data.x}
             }
             if (clicks === 1 && data.isDestination){
                 clicks = clicks - 1;
             }
             // destination
             if (clicks === 2 && ! data.isStartingPoint){
+                trip.end = {row : data.y, column: data.x}
                 // d3.select(this).style('fill', '#f00');
                 data.isDestination = true;
                 var element = destinationImages[index];
@@ -221,6 +238,8 @@ function displayGrid() {
             if (clicks === 2 && data.isStartingPoint){
                 clicks = clicks - 1;
             }
+
+            console.log(trip);
         });
 }
 
@@ -247,6 +266,7 @@ function displayRobots(robotsData, robotsGroup){
         .attr('height', function() { return cellLengthPixels / 3.0 ; });
     group.exit().remove();
 }
+
 
 function buttonClicked(robotType){
     var buttons = d3.selectAll('.buttonEnabled');
