@@ -131,7 +131,7 @@ function displayGrid() {
         var y = 0;
 
         // iterate for rows
-        for (var row = 0; row < 9; row++) {
+        for (var row = 0; row < 7; row++) {
             data.push([]);
 
             // iterate for cells/columns inside rows
@@ -246,4 +246,12 @@ function displayRobots(robotsData, robotsGroup){
         .attr('width', function() { return cellLengthPixels / 3.0 ; })
         .attr('height', function() { return cellLengthPixels / 3.0 ; });
     group.exit().remove();
+}
+
+function buttonClicked(robotType){
+    var buttons = d3.selectAll('.buttonEnabled');
+    // if buttons are enabled
+    if(buttons._groups[0].length > 0){
+        buttons.attr('class', 'buttonDisabled');
+    }
 }

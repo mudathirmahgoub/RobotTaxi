@@ -9,10 +9,25 @@ html, body{
 
 svg {
     width: 100%;
-    height: 100%;
+    height: 560px;
 }
 
 #map{
     width: 100%;
     height: 100%;
+}
+
+.uber{
+    width: 50%;
+    margin: 0 auto;
+}
+
+.buttonEnabled:hover{
+    transform: scale(1.3);
+    transition: transform 0.8s;
+}
+
+.buttonDisabled{
+    transform: scale(1);
+    filter: grayscale(100%);
 }

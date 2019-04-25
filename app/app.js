@@ -100,7 +100,7 @@ function displayGrid() {
         var click = 0;
 
         // iterate for rows
-        for (var row = 0; row < 9; row++) {
+        for (var row = 0; row < 7; row++) {
             data.push([]);
 
             // iterate for cells/columns inside rows
