@@ -103,5 +103,15 @@ def post_status(robot_id):
     return jsonify(robot_state)
 
 
+# POST '/robot_status/<id>' updates robot status and returns update time
+@app.route('/trip', methods=['POST'])
+def trip_request():
+    json_data = request.get_json()
+    print(json_data)
+    json_data['status'] = 'started'
+    return jsonify(json_data)
+
+
+
 if __name__ == '__main__':
     app.run(port=7000, host='0.0.0.0', debug=True)

@@ -22,7 +22,7 @@ var mapCells;
 var gridData;
 
 var trip = {
-    status: undefined, // or started, finished
+    status: undefined, // or requested, waiting, started, finished
     start: undefined,
     end: undefined,
     robotType: undefined
@@ -278,6 +278,20 @@ function buttonClicked(robotType){
     var buttons = d3.selectAll('.buttonEnabled');
     // if buttons are enabled
     if(buttons._groups[0].length > 0){
+        trip.robotType = robotType;
+        trip.status = 'requested';
+        console.log(trip);
         buttons.attr('class', 'buttonDisabled');
+
+        d3.json('/trip', {
+            method:"POST",
+            body: JSON.stringify(trip),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(function (data) {
+            console.log(data);
+        });
     }
 }
