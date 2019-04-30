@@ -234,6 +234,12 @@ function displayGrid() {
                 data.isDestination = true;
                 var element = destinationImages[index];
                 d3.select(element).style('visibility', 'visible');
+
+                var buttons = d3.selectAll('.buttonDisabled');
+                // if buttons are enabled
+                if(buttons._groups[0].length > 0){
+                    buttons.attr('class', 'buttonEnabled');
+                }
             }
             if (clicks === 2 && data.isStartingPoint){
                 clicks = clicks - 1;
