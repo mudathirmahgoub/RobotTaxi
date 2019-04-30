@@ -1,7 +1,6 @@
 import threading
 from flask import Flask, jsonify, request, abort
 from shared import *
-from PIL import Image
 import os
 import matlab.engine
 
@@ -25,6 +24,8 @@ app.unique_id = 0
 
 # global dictionary for robots that stores robot id and its state
 app.robots_dictionary = {}
+# global dictionary for trips that stores robot id and trip status
+app.trips_dictionary = {}
 
 
 def allowed_file(filename):
@@ -110,7 +111,6 @@ def trip_request():
     print(json_data)
     json_data['status'] = 'started'
     return jsonify(json_data)
-
 
 
 if __name__ == '__main__':
