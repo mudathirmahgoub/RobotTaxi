@@ -5,7 +5,7 @@ import requests
 import random
 
 # global variables
-api_url = 'http://10.0.1.12:7000/{0}'
+api_url = 'http://192.168.0.12:7000/{0}'
 map_response = requests.get(api_url.format('map'))
 world_map = map_response.json()
 cell_length = world_map['cellLengthMillimeters']

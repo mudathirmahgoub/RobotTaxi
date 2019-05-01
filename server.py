@@ -5,7 +5,7 @@ import os
 import matlab.engine
 
 # matlab.engine.shareEngine('DeepLearning')
-matlab_engine = matlab.engine.connect_matlab('MATLAB_11648')
+matlab_engine = matlab.engine.connect_matlab('DeepLearning')
 
 
 # initialize the server app
