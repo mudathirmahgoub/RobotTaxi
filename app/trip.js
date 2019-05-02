@@ -307,7 +307,11 @@ function displayRobots(robotsData){
             if(data['trip'] === null){
                 return '';
             }
-            return 'images/booked.svg';
+            switch (data['trip'].status){
+                case 'waiting': return 'images/waiting.svg';
+                case 'started': return 'images/started.svg';
+            }
+            return '';
         })
         .attr('width', function() { return cellLengthPixels / 3.0 ; })
         .attr('height', function() { return cellLengthPixels / 3.0 ; });
