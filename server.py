@@ -24,8 +24,11 @@ app.unique_id = 0
 
 # global dictionary for robots that stores robot id and its state
 app.robots_dictionary = {}
-# global dictionary for trips that stores robot id and trip status
-app.trips_dictionary = {}
+with open('map.json') as json_file:
+    app.map_data = json.load(json_file)
+    app.cell_length: int = app.map_data['cellLengthMillimeters']
+    app.start_row: int = app.map_data['startRow']
+    app.start_column: int = app.map_data['startColumn']
 
 
 def allowed_file(filename):
@@ -42,9 +45,7 @@ def test():
 # GET '/' for testing the server
 @app.route('/map')
 def get_map():
-    with open('map.json') as json_file:
-        map_data = json.load(json_file)
-        return jsonify(map_data)
+    return jsonify(app.map_data)
 
 
 # GET '/id' returns a unique id from the server
@@ -124,7 +125,8 @@ def trip_request():
 def get_nearest_robot(trip):
     # filter out none values
     robots = {value for value in app.robots_dictionary.values() if value is not None}
-    idle_robots = {robot for robot in robots if robot.trip is None}
+    idle_robots = {robot for robot in robots if robot.trip is None
+                   and robot.robot_type == trip['robot_type']}
     print(idle_robots)
     # no idle robot
     if len(idle_robots) == 0:
@@ -141,7 +143,12 @@ def get_nearest_robot(trip):
 
 
 def get_distance(trip, robot):
-    return 1
+
+    row: int = robot.x // app.cell_length
+    column: int = robot.y // app.cell_length
+    current_row, current_column = row + app.start_row, column + app.start_column
+    # return the distance to the trip start location
+    return abs(trip['start']['column'] - current_column) + abs(trip['start']['row'] - current_row)
 
 
 if __name__ == '__main__':
