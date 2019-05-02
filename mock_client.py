@@ -40,7 +40,6 @@ def post_status():
     json_data = RobotEncoder().encode(robot_state)
     response = requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
                              headers={'Content-type': 'application/json'})
-    print(response.__dict__)
     trip_json = response.json()
     if trip_json['trip']:
         trip = Trip(**trip_json['trip'])
@@ -142,7 +141,7 @@ def program():
     Timer(0.1, post_status).start()
     while True:
         post_image()
-        time.sleep(refresh_rate_milliseconds / 8000)  # convert to seconds
+        time.sleep(0.1)  # convert to seconds
 
 
 if __name__ == '__main__':
