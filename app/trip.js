@@ -363,10 +363,10 @@ function buttonClicked(robotType){
                 d3.select('#notification')
                     .style('visibility', 'visible')
                     .text('The trip request can not be fulfilled. Please try again later.');
-
-            setTimeout(function () {
-                d3.select('#notification')
-                    .style('visibility', 'hidden')
+                buttons.attr('class', 'buttonEnabled');
+                setTimeout(function () {
+                    d3.select('#notification')
+                        .style('visibility', 'hidden')
             }, 2000);
         });
     }
