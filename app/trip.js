@@ -4,9 +4,9 @@ var svg = d3.select('svg')
     .attr('width', '100%')
     .attr('height', '100%')
     .style('background-color', '#fff');
-    // .call(d3.zoom().on("zoom", function () {
-    //     svg.attr("transform", d3.event.transform)
-    // }));
+
+var robotsGroup;
+var tripsGroup;
 
 var cellLengthPixels;
 var cellLengthMillimeters;
@@ -36,11 +36,12 @@ d3.json('/map').then(function (mapData){
     mapCells = mapData.cells;
     displayMap(mapCells);
     displayGrid();
-    var robotsGroup = svg.append('g');
+    robotsGroup = svg.append('g');
+    tripsGroup = svg.append('g');
     d3.interval(function () {
         d3.json('/robot_status').then(function(robotsData){
             var values = Object.values(robotsData);
-            displayRobots(values, robotsGroup);
+            displayRobots(values);
         });
     }, refreshRateMilliseconds);
 });
@@ -262,14 +263,14 @@ function transformRobot(data) {
     return 'translate(' + xTranslate + ',' + yTranslate + ') ' + rotate;
 }
 
-function displayRobots(robotsData, robotsGroup){
-    var group = robotsGroup
+function displayRobots(robotsData){
+    var robots = robotsGroup
             .selectAll('image')
             .data(robotsData);
-    group.transition().duration(refreshRateMilliseconds)
+    robots.transition().duration(refreshRateMilliseconds)
         .ease(d3.easeLinear)
         .attr('transform', transformRobot);
-    var robot = group.enter().append('g');
+    var robot = robots.enter().append('g');
         robot.append('svg:image')
         .attr('transform', transformRobot)
         .attr('class', 'robot')
@@ -283,27 +284,7 @@ function displayRobots(robotsData, robotsGroup){
         })
         .attr('width', function() { return cellLengthPixels / 3.0 ; })
         .attr('height', function() { return cellLengthPixels / 3.0 ; });
-
-    robot.select('tripStatus')
-        .enter()
-        .append('svg:image')
-        .attr('xlink:href', function(data){
-            if(data['trip'] === undefined)
-            {
-                return '';
-            }
-            console.log(data);
-            switch(data['trip'].status){
-                case 'waiting':
-                    return 'images/booked.svg';
-                case 'started':
-                    return 'images/occupied.svg';
-            }
-            return '';
-        });
-
-    robot.exit().remove();
-    group.exit().remove();
+    robots.exit().remove();
 }
 
 
