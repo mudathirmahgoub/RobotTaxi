@@ -1,12 +1,8 @@
 from threading import *
 from shared_client import *
 
-
-left_speed, right_speed = 50, 50
-big_turn = 50
-small_turn = 5
-turn = 20
-
+# robot_type = 'cozmo'
+robot_type = 'vector'
 id_response = requests.get(api_url.format('id'))
 robot_id = id_response.json()['id']
 
@@ -25,7 +21,7 @@ def get_cell(row, column):
 
 def post_status():
     global x, y, rotation
-    robot_state = RobotState(robot_id, 'cozmo', x, y, rotation)
+    robot_state = RobotState(robot_id, robot_type, x, y, rotation)
     json_data = RobotEncoder().encode(robot_state)
     requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
                   headers={'Content-type': 'application/json'})

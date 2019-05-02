@@ -273,7 +273,14 @@ function displayRobots(robotsData, robotsGroup){
         .append('svg:image')
         .attr('transform', transformRobot)
         .attr('class', 'robot')
-        .attr('xlink:href', 'images/cozmo.png')
+        .attr('xlink:href', function(data){
+            switch(data['robot_type']){
+                case 'cozmo':
+                    return 'images/cozmo.png';
+                case 'vector':
+                    return 'images/vector.png';
+            }
+        })
         .attr('width', function() { return cellLengthPixels / 3.0 ; })
         .attr('height', function() { return cellLengthPixels / 3.0 ; });
     group.exit().remove();
