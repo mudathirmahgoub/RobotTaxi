@@ -41,6 +41,7 @@ def post_image():
     row, column = x // cell_length, y // cell_length
     current_row, current_column = row + start_row, column + start_column
     if abs(target_row - current_row) > 0 and target_column == current_column:
+        y = (target_column - start_column) * cell_length
         if target_row > current_row:
             rotation = 0
             x = x + speed
@@ -49,6 +50,7 @@ def post_image():
             x = x - speed
 
     elif abs(target_column - current_column) > 0 and target_row == current_row:
+        x = (target_row - start_row) * cell_length + cell_length / 2
         if target_column > current_column:
             rotation = 90
             y = y + speed
@@ -63,6 +65,7 @@ def post_image():
 def get_new_target(current_column, current_row):
     global target_row, target_column, previous_row, previous_column
     cell = get_cell(current_row, current_column)
+    print(cell)
     if cell['shape'] == 'straightVertical':
         if current_row > previous_row:
             target_row = current_row + 1
@@ -124,7 +127,7 @@ def program():
     Timer(0.1, post_status).start()
     while True:
         post_image()
-        time.sleep(refresh_rate_milliseconds / 10000)  # convert to seconds
+        time.sleep(refresh_rate_milliseconds / 8000)  # convert to seconds
 
 
 if __name__ == '__main__':
