@@ -13,14 +13,8 @@ previous_row: int = start_row
 previous_column: int = start_column
 target_row: int = start_row + 1
 target_column: int = start_column
+
 speed: int = 20
-
-
-def get_cell(row, column):
-    cells = [c for c in world_map['cells'] if c['row'] == row and c['column'] == column]
-    if len(cells) > 0:
-        return cells[0]
-    return None
 
 
 def post_status():
@@ -119,7 +113,7 @@ def get_new_target(current_column, current_row):
 
     # decision cells
     if trip:
-        trip_row, trip_column = get_trip_location()
+        trip_row, trip_column = get_trip_location(trip)
         # choose the nearest one
         if cell['shape'] == 'tRight':
             if rotation == 0:
@@ -346,23 +340,6 @@ def get_new_target(current_column, current_row):
             elif rotation == -90 and ternary_choice == 2:
                 target_row = current_row + 1
     previous_row, previous_column = current_row, current_column
-
-
-def get_trip_location():
-    if trip:
-        if trip.status == 'waiting':
-            trip_row, trip_column = trip.start['row'], trip.start['column']
-        elif trip.status == 'started':
-            trip_row, trip_column = trip.end['row'], trip.end['column']
-        else:
-            trip_row, trip_column = None, None
-    else:
-        trip_row, trip_column = None, None
-    return trip_row, trip_column
-
-
-def distance(current_row, current_column, trip_row,  trip_column):
-    return abs(trip_column - current_column) + abs(trip_row - current_row)
 
 
 def program():
