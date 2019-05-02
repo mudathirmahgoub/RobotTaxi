@@ -1,8 +1,8 @@
 from threading import *
 from shared_client import *
+import sys
 
-# robot_type = 'cozmo'
-robot_type = 'vector'
+robot_type = 'cozmo'
 id_response = requests.get(api_url.format('id'))
 robot_id = id_response.json()['id']
 
@@ -127,4 +127,10 @@ def program():
 
 
 if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        # specify the robot type either 'cozmo' or 'vector'
+        robot_type = sys.argv[1]
+    else:
+        # default is cozmo
+        robot_type = 'cozmo'
     program()

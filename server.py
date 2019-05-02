@@ -106,10 +106,34 @@ def post_status(robot_id):
 # POST '/robot_status/<id>' updates robot status and returns update time
 @app.route('/trip', methods=['POST'])
 def trip_request():
-    json_data = request.get_json()
-    print(json_data)
-    json_data['status'] = 'started'
-    return jsonify(json_data)
+    trip = request.get_json()
+    print(trip)
+    selected_robot = get_nearest_robot(trip)
+    if not selected_robot:
+        abort(404, {'message': 'Sorry, the trip request can not be fulfilled now. Try again later'})
+    return jsonify(selected_robot)
+
+
+def get_nearest_robot(trip):
+    # filter out none values
+    robots = {value for value in app.robots_dictionary.values() if value is not None}
+    idle_robots = {robot for robot in robots if robot.trip is None}
+    print(idle_robots)
+    # no idle robot
+    if len(idle_robots) == 0:
+        return None
+
+    # find the nearest robot
+    idle_robots.sort(key=lambda robot: get_distance(trip, robot))
+    trip['status'] = 'started'
+    selected_robot = idle_robots[0]
+    selected_robot.trip = trip
+    print(selected_robot)
+    return selected_robot
+
+
+def get_distance(trip, robot):
+    return 1
 
 
 if __name__ == '__main__':
