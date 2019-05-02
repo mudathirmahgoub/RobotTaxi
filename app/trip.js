@@ -293,9 +293,7 @@ function buttonClicked(robotType){
     if(buttons._groups[0].length > 0){
         trip.robotType = robotType;
         trip.status = 'requested';
-        console.log(trip);
         buttons.attr('class', 'buttonDisabled');
-
         d3.json('/trip', {
             method:"POST",
             body: JSON.stringify(trip),
@@ -303,8 +301,10 @@ function buttonClicked(robotType){
                 "Content-type": "application/json; charset=UTF-8"
             }
         })
-        .then(function (data) {
-            console.log(data);
+            .then(function (value) {
+                console.log(value)
+            }).catch(function (reason) {
+                console.log(reason);
         });
     }
 }
