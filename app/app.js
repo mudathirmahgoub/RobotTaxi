@@ -19,7 +19,6 @@ d3.json('/map').then(function (mapData){
     cellLengthMillimeters = mapData['cellLengthMillimeters'];
     refreshRateMilliseconds = mapData['refreshRateMilliseconds'];
     displayMap(mapData.cells);
-    displayGrid();
     var robotsGroup = svg.append('g');
     d3.interval(function () {
         d3.json('/robot_status').then(function(robotsData){
@@ -88,76 +87,6 @@ function displayMap(mapData){
         .attr('y', function(data) { return data['row'] * cellLengthPixels; })
         .attr('width', function() { return cellLengthPixels ; })
         .attr('height', function() { return cellLengthPixels; });
-}
-
-function displayGrid() {
-
-    function getGridData() {
-        var data = [];
-        var x = 0; //starting x and y at 1 so the stroke will show when we make the svg below
-        var y = 0;
-        //add this to the getGridData function
-        var click = 0;
-
-        // iterate for rows
-        for (var row = 0; row < 7; row++) {
-            data.push([]);
-
-            // iterate for cells/columns inside rows
-            for (var column = 0; column < 9; column++) {
-                data[row].push({
-                    x: x,
-                    y: y,
-                    click: click
-                });
-                // increment the x position
-                x += 1;
-            }
-            // reset the x position after a row is complete
-            x = 0;
-            // increment the y position for the next row
-            y += 1;
-        }
-        return data;
-    }
-
-    var gridData = getGridData();
-
-    var row = svg.selectAll('.row')
-        .data(gridData)
-        .enter().append('g')
-        .attr('class', 'row');
-
-    row.selectAll('.square')
-        .data(function (d) {
-            return d;
-        })
-        .enter().append('rect')
-        .attr('class', 'square')
-        .attr('x', function (d) {
-            return d.x * cellLengthPixels;
-        })
-        .attr('y', function (d) {
-            return d.y * cellLengthPixels;
-        })
-        .attr('width', function () {
-            return cellLengthPixels;
-        })
-        .attr('height', function () {
-            return cellLengthPixels;
-        })
-        .style('fill', 'rgba(255, 255, 255, 0)')
-        .on('click', function (d) {
-            console.log(d);
-            d.click++;
-            if ((d.click) % 2 === 1)
-            {
-                d3.select(this).style('fill', '#fff');
-            }
-            else {
-                d3.select(this).style('fill', 'rgba(255, 255, 255, 0)');
-            }
-        });
 }
 
 function transformRobot(data) {
