@@ -145,6 +145,12 @@ function resetTrip(row) {
 
     row.selectAll('.square')
         .style('fill', 'rgba(255, 255, 255, 0)');
+
+    var buttons = d3.selectAll('.buttonEnabled');
+    // if buttons are enabled
+    if(buttons._groups[0].length > 0){
+        buttons.attr('class', 'buttonDisabled');
+    }
 }
 
 function displayGrid() {
