@@ -110,7 +110,7 @@ def trip_request():
     print(trip)
     selected_robot = get_nearest_robot(trip)
     if not selected_robot:
-        abort(404, {'message': 'Sorry, the trip request can not be fulfilled now. Try again later'})
+        abort(404, {'message': 'The trip request can not be fulfilled. Please try again later.'})
     return jsonify(selected_robot)
 
 
