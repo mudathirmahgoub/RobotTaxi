@@ -23,6 +23,41 @@ svg {
     margin: 0 auto;
 }
 
+
+.trip{
+    width: 100px;
+    margin: 0 auto;
+}
+
+.tripButton{
+    color: #fff;
+    text-shadow: 0 -2px 0 rgba(0,0,0,.25);
+    background-image: linear-gradient(to bottom,#727577,#636669);
+    background-repeat: repeat-x;
+    border: 2px solid;
+    border-color: #727577 #636669;
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 20px;
+    font-weight: normal;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.tripButton:hover{
+    transform: scale(1.05);
+    transition: transform 0.1s;
+    background-image: linear-gradient(to bottom, #999999,#aaaaaa);
+}
+.tripButton:hover{
+    background-color: #555555;
+    color: white;
+}
+
 .buttonEnabled:hover{
     transform: scale(1.3);
     transition: transform 0.8s;
