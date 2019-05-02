@@ -6,7 +6,8 @@ var svg = d3.select('svg')
     .style('background-color', '#fff');
 
 var robotsGroup;
-var tripsGroup;
+var tripsWaitingGroup;
+var tripsStartedGroup;
 
 var cellLengthPixels;
 var cellLengthMillimeters;
@@ -37,7 +38,8 @@ d3.json('/map').then(function (mapData){
     displayMap(mapCells);
     displayGrid();
     robotsGroup = svg.append('g');
-    tripsGroup = svg.append('g');
+    tripsWaitingGroup = svg.append('g');
+    tripsStartedGroup = svg.append('g');
     d3.interval(function () {
         d3.json('/robot_status').then(function(robotsData){
             var values = Object.values(robotsData);
@@ -286,36 +288,57 @@ function displayRobots(robotsData){
         .attr('height', function() { return cellLengthPixels / 3.0 ; });
     robots.exit().remove();
 
-    var tripsData = [];
+    var tripsWaitingData = [];
     robotsData.forEach(function (data) {
-        if(data['trip'] != null){
-            tripsData.push(data);
+        if (data['trip'] != null && data['trip'].status === 'waiting') {
+            tripsWaitingData.push(data);
         }
     });
 
-    var trips = tripsGroup
+    var tripsWaiting = tripsWaitingGroup
         .selectAll('image')
-        .data(tripsData);
-    trips.transition().duration(refreshRateMilliseconds)
+        .data(tripsWaitingData);
+    tripsWaiting.transition().duration(refreshRateMilliseconds)
         .ease(d3.easeLinear)
         .attr('transform', transformRobot);
-    trips.enter()
+    tripsWaiting.enter()
         .append('svg:image')
         .attr('transform', transformRobot)
         .attr('class', 'robot')
-        .attr('xlink:href', function(data){
-            if(data['trip'] === null){
-                return '';
-            }
-            switch (data['trip'].status){
-                case 'waiting': return 'images/waiting.svg';
-                case 'started': return 'images/started.svg';
-            }
-            return '';
+        .attr('xlink:href', 'images/waiting.svg')
+        .attr('width', function () {
+            return cellLengthPixels / 3.0;
         })
-        .attr('width', function() { return cellLengthPixels / 3.0 ; })
-        .attr('height', function() { return cellLengthPixels / 3.0 ; });
-    trips.exit().remove();
+        .attr('height', function () {
+            return cellLengthPixels / 3.0;
+        });
+    tripsWaiting.exit().remove();
+
+    var tripsStartedData = [];
+    robotsData.forEach(function (data) {
+        if (data['trip'] != null && data['trip'].status === 'started') {
+            tripsStartedData.push(data);
+        }
+    });
+
+    var tripsStarted = tripsStartedGroup
+        .selectAll('image')
+        .data(tripsStartedData);
+    tripsStarted.transition().duration(refreshRateMilliseconds)
+        .ease(d3.easeLinear)
+        .attr('transform', transformRobot);
+    tripsStarted.enter()
+        .append('svg:image')
+        .attr('transform', transformRobot)
+        .attr('class', 'robot')
+        .attr('xlink:href', 'images/started.svg')
+        .attr('width', function () {
+            return cellLengthPixels / 3.0;
+        })
+        .attr('height', function () {
+            return cellLengthPixels / 3.0;
+        });
+    tripsStarted.exit().remove();
 }
 
 
