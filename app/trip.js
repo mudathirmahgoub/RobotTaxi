@@ -26,7 +26,7 @@ var trip = {
     status: undefined, // or requested, waiting, started, finished
     start: undefined,
     end: undefined,
-    robotType: undefined
+    robot_type: undefined
 };
 
 d3.json('/map').then(function (mapData){
@@ -346,7 +346,7 @@ function buttonClicked(robotType){
     var buttons = d3.selectAll('.buttonEnabled');
     // if buttons are enabled
     if(buttons._groups[0].length > 0){
-        trip.robotType = robotType;
+        trip.robot_type = robotType;
         trip.status = 'requested';
         buttons.attr('class', 'buttonDisabled');
         d3.json('/trip', {

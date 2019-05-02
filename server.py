@@ -104,7 +104,7 @@ def post_status(robot_id):
     else:
         # update the dictionary
         app.robots_dictionary[robot_id].update(robot_state)
-    return jsonify(robot_state)
+    return jsonify(app.robots_dictionary[robot_id])
 
 
 # POST '/robot_status/<id>' updates robot status and returns update time

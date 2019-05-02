@@ -5,7 +5,7 @@ import sys
 robot_type = 'cozmo'
 id_response = requests.get(api_url.format('id'))
 robot_id = id_response.json()['id']
-
+trip = None
 x, y, rotation = 0, 0, 0
 previous_row, previous_column = start_row, start_column
 target_row, target_column = start_row + 1, start_column
@@ -21,10 +21,24 @@ def get_cell(row, column):
 
 def post_status():
     global x, y, rotation
-    robot_state = RobotState(robot_id, robot_type, x, y, rotation)
+    global x, y, rotation, trip
+    if trip:
+        row, column = x // cell_length, y // cell_length
+        current_row, current_column = row + start_row, column + start_column
+        if trip['status'] == 'waiting' and \
+                current_row == trip['start']['row'] and current_column == trip['start']['column']:
+            trip['status'] = 'started'
+        if trip['status'] == 'started' and \
+                current_row == trip['end']['row'] and current_column == trip['end']['column']:
+            trip['status'] = 'finished'
+
+    robot_state = RobotState(robot_id, robot_type, x, y, rotation, trip)
+    print(robot_state.__dict__)
     json_data = RobotEncoder().encode(robot_state)
-    requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
-                  headers={'Content-type': 'application/json'})
+    response = requests.post(api_url.format('robot_status/{0}').format(robot_id), data=json_data,
+                             headers={'Content-type': 'application/json'})
+    trip = response.json()['trip']
+    print(trip)
     Timer(0.1, post_status).start()
 
 
