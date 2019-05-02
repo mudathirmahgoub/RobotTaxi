@@ -43,6 +43,18 @@ class RobotState:
         self.update_time = update_time
         self.trip = trip
 
+    def update(self, robot_state):
+        self.x = robot_state.x
+        self.y = robot_state.y
+        self.rotation = robot_state.rotation
+        self.update_time = robot_state.update_time
+        # update trip status
+        if robot_state.trip:
+            if robot_state.trip.status == 'started':
+                self.trip.status = robot_state.trip.status
+            if robot_state.trip.status == 'finished':
+                self.trip = None
+
 
 class RobotEncoder(json.JSONEncoder):
     def default(self, json_object):

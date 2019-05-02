@@ -98,8 +98,12 @@ def post_status(robot_id):
     robot_state = RobotState(**json_data)
     # update the time
     robot_state.update_time = datetime.now()
-    # update the dictionary
-    app.robots_dictionary[robot_id] = robot_state
+
+    if not app.robots_dictionary[robot_id]:
+        app.robots_dictionary[robot_id] = robot_state
+    else:
+        # update the dictionary
+        app.robots_dictionary[robot_id].update(robot_state)
     return jsonify(robot_state)
 
 
@@ -113,10 +117,7 @@ def trip_request():
         abort(404, {'message': 'The trip request can not be fulfilled. Please try again later.'})
 
     # update the dictionary
-    dictionary = app.robots_dictionary
-    dictionary.update({selected_robot.robot_id: selected_robot})
-    app.robots_dictionary.update({selected_robot.robot_id: selected_robot})
-    app.robots_dictionary = dictionary
+    app.robots_dictionary[selected_robot.robot_id] = selected_robot
     return jsonify(selected_robot)
 
 
@@ -132,7 +133,7 @@ def get_nearest_robot(trip):
     # find the nearest robot
     idle_robots = list(idle_robots)  # convert the set to a list
     idle_robots.sort(key=lambda robot: get_distance(trip, robot))
-    trip['status'] = 'started'
+    trip['status'] = 'waiting'
     selected_robot = idle_robots[0]
     selected_robot.trip = trip
     print(selected_robot)
