@@ -9,8 +9,10 @@ trip: Trip = None
 x: int = 0
 y: int = 0
 rotation: int = 0
-previous_row, previous_column = start_row, start_column
-target_row, target_column = start_row + 1, start_column
+previous_row: int = start_row
+previous_column: int = start_column
+target_row: int = start_row + 1
+target_column: int = start_column
 speed: int = 20
 
 
@@ -24,7 +26,8 @@ def get_cell(row, column):
 def post_status():
     global x, y, rotation, trip
     if trip:
-        row, column = x // cell_length, y // cell_length
+        row: int = x // cell_length
+        column: int = y // cell_length
         current_row, current_column = row + start_row, column + start_column
         if trip.status == 'waiting' and \
                 current_row == trip.start['row'] and current_column == trip.start['column']:
@@ -52,7 +55,8 @@ def post_image():
     global previous_row, previous_column
     global target_row, target_column, x, y, rotation
 
-    row, column = x // cell_length, y // cell_length
+    row: int = x // cell_length
+    column: int = y // cell_length
     current_row, current_column = row + start_row, column + start_column
 
     if abs(target_row - current_row) > 0 and target_column == current_column:
@@ -114,86 +118,233 @@ def get_new_target(current_column, current_row):
             target_column = current_column + 1
 
     # decision cells
-    trip_row, trip_column = get_trip_location()
-    binary_choice = random.randint(0, 1)
-    if cell['shape'] == 'tRight':
-        if rotation == 0 and binary_choice == 0:
-            target_row = current_row + 1
-        elif rotation == 0 and binary_choice == 1:
-            target_column = current_column + 1
-        elif rotation == 180 and binary_choice == 0:
-            target_row = current_row - 1
-        elif rotation == 180 and binary_choice == 1:
-            target_column = current_column + 1
-        elif rotation == -90 and binary_choice == 0:
-            target_row = current_row - 1
-        else:
-            target_row = current_row + 1
-    elif cell['shape'] == 'tTop':
-        if rotation == 90 and binary_choice == 0:
-            target_row = current_row - 1
-        elif rotation == 90 and binary_choice == 1:
-            target_column = current_column + 1
-        elif rotation == -90 and binary_choice == 0:
-            target_row = current_row - 1
-        elif rotation == -90 and binary_choice == 1:
-            target_column = current_column - 1
-        elif rotation == 0 and binary_choice == 0:
-            target_column = current_column - 1
-        else:
-            target_column = current_column + 1
-    elif cell['shape'] == 'tLeft':
-        if rotation == 0 and binary_choice == 0:
-            target_row = current_row + 1
-        elif rotation == 0 and binary_choice == 1:
-            target_column = current_column - 1
-        elif rotation == 180 and binary_choice == 0:
-            target_row = current_row - 1
-        elif rotation == 180 and binary_choice == 1:
-            target_column = current_column - 1
-        elif rotation == 90 and binary_choice == 0:
-            target_row = current_row - 1
-        else:
-            target_row = current_row + 1
-    elif cell['shape'] == 'tBottom':
-        if rotation == 90 and binary_choice == 0:
-            target_row = current_row + 1
-        elif rotation == 90 and binary_choice == 1:
-            target_column = current_column + 1
-        elif rotation == -90 and binary_choice == 0:
-            target_row = current_row + 1
-        elif rotation == -90 and binary_choice == 1:
-            target_column = current_column - 1
-        elif rotation == 180 and binary_choice == 0:
-            target_column = current_column - 1
-        else:
-            target_column = current_column + 1
-    if cell['shape'] == 'cross':
-        ternary_choice = random.randint(0, 2)
-        if rotation == 0 and ternary_choice == 0:
-            target_column = current_column - 1
-        elif rotation == 0 and ternary_choice == 1:
-            target_row = current_row + 1
-        elif rotation == 0 and ternary_choice == 2:
-            target_column = current_column + 1
-        elif rotation == 180 and ternary_choice == 0:
-            target_column = current_column - 1
-        elif rotation == 180 and ternary_choice == 1:
-            target_row = current_row - 1
-        elif rotation == 180 and ternary_choice == 2:
-            target_column = current_column + 1
-        elif rotation == 90 and ternary_choice == 0:
-            target_row = current_row - 1
-        elif rotation == 90 and ternary_choice == 1:
-            target_column = current_column + 1
-        elif rotation == 90 and ternary_choice == 2:
-            target_row = current_row + 1
-        elif rotation == -90 and ternary_choice == 0:
-            target_row = current_row - 1
-        elif rotation == -90 and ternary_choice == 1:
-            target_column = current_column - 1
-        elif rotation == -90 and ternary_choice == 2:
-            target_row = current_row + 1
+    if trip:
+        trip_row, trip_column = get_trip_location()
+        # choose the nearest one
+        if cell['shape'] == 'tRight':
+            if rotation == 0:
+                directions = [((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == 180:
+                directions = [((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == -90:
+                directions = [((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+        elif cell['shape'] == 'tTop':
+            if rotation == 90:
+                directions = [((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+
+            elif rotation == -90:
+                directions = [((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == 0:
+                directions = [((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+        elif cell['shape'] == 'tLeft':
+            if rotation == 0:
+                directions = [((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == 180:
+                directions = [((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == 90:
+                directions = [((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+        elif cell['shape'] == 'tBottom':
+            if rotation == 90:
+                directions = [((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == -90:
+                directions = [((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == 180:
+                directions = [((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+        if cell['shape'] == 'cross':
+            if rotation == 0:
+                directions = [((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+
+            elif rotation == 180:
+                directions = [((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == 90:
+                directions = [((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column + 1),
+                               distance(current_row, current_column + 1, trip_row, trip_column)),
+                              ((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+            elif rotation == -90:
+                directions = [((current_row - 1, current_column),
+                               distance(current_row - 1, current_column, trip_row, trip_column)),
+                              ((current_row, current_column - 1),
+                               distance(current_row, current_column - 1, trip_row, trip_column)),
+                              ((current_row + 1, current_column),
+                               distance(current_row + 1, current_column, trip_row, trip_column)),
+                              ]
+                directions.sort(key=lambda pair: pair[1])  # sort using the distance
+                target_row, target_column = directions[0][0]
+    else:
+        # make a random choice
+        binary_choice = random.randint(0, 1)
+        if cell['shape'] == 'tRight':
+            if rotation == 0 and binary_choice == 0:
+                target_row = current_row + 1
+            elif rotation == 0 and binary_choice == 1:
+                target_column = current_column + 1
+            elif rotation == 180 and binary_choice == 0:
+                target_row = current_row - 1
+            elif rotation == 180 and binary_choice == 1:
+                target_column = current_column + 1
+            elif rotation == -90 and binary_choice == 0:
+                target_row = current_row - 1
+            else:
+                target_row = current_row + 1
+        elif cell['shape'] == 'tTop':
+            if rotation == 90 and binary_choice == 0:
+                target_row = current_row - 1
+            elif rotation == 90 and binary_choice == 1:
+                target_column = current_column + 1
+            elif rotation == -90 and binary_choice == 0:
+                target_row = current_row - 1
+            elif rotation == -90 and binary_choice == 1:
+                target_column = current_column - 1
+            elif rotation == 0 and binary_choice == 0:
+                target_column = current_column - 1
+            else:
+                target_column = current_column + 1
+        elif cell['shape'] == 'tLeft':
+            if rotation == 0 and binary_choice == 0:
+                target_row = current_row + 1
+            elif rotation == 0 and binary_choice == 1:
+                target_column = current_column - 1
+            elif rotation == 180 and binary_choice == 0:
+                target_row = current_row - 1
+            elif rotation == 180 and binary_choice == 1:
+                target_column = current_column - 1
+            elif rotation == 90 and binary_choice == 0:
+                target_row = current_row - 1
+            else:
+                target_row = current_row + 1
+        elif cell['shape'] == 'tBottom':
+            if rotation == 90 and binary_choice == 0:
+                target_row = current_row + 1
+            elif rotation == 90 and binary_choice == 1:
+                target_column = current_column + 1
+            elif rotation == -90 and binary_choice == 0:
+                target_row = current_row + 1
+            elif rotation == -90 and binary_choice == 1:
+                target_column = current_column - 1
+            elif rotation == 180 and binary_choice == 0:
+                target_column = current_column - 1
+            else:
+                target_column = current_column + 1
+        if cell['shape'] == 'cross':
+            ternary_choice = random.randint(0, 2)
+            if rotation == 0 and ternary_choice == 0:
+                target_column = current_column - 1
+            elif rotation == 0 and ternary_choice == 1:
+                target_row = current_row + 1
+            elif rotation == 0 and ternary_choice == 2:
+                target_column = current_column + 1
+            elif rotation == 180 and ternary_choice == 0:
+                target_column = current_column - 1
+            elif rotation == 180 and ternary_choice == 1:
+                target_row = current_row - 1
+            elif rotation == 180 and ternary_choice == 2:
+                target_column = current_column + 1
+            elif rotation == 90 and ternary_choice == 0:
+                target_row = current_row - 1
+            elif rotation == 90 and ternary_choice == 1:
+                target_column = current_column + 1
+            elif rotation == 90 and ternary_choice == 2:
+                target_row = current_row + 1
+            elif rotation == -90 and ternary_choice == 0:
+                target_row = current_row - 1
+            elif rotation == -90 and ternary_choice == 1:
+                target_column = current_column - 1
+            elif rotation == -90 and ternary_choice == 2:
+                target_row = current_row + 1
     previous_row, previous_column = current_row, current_column
 
 
