@@ -1,41 +1,31 @@
 'use strict';
 
-//based on http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html
-
 var svg = d3.select('svg')
     .attr('width', '100%')
     .attr('height', '100%')
     .style('background-color', '#fff');
-    // .call(d3.zoom().on("zoom", function () {
-    //     svg.attr("transform", d3.event.transform)
-    // }));
 
 var cellLengthPixels;
 var cellLengthMillimeters;
 var refreshRateMilliseconds;
 
+// get the map data from the server
 d3.json('/map').then(function (mapData){
+    // read the global variables
     cellLengthPixels = mapData['cellLengthPixels'];
     cellLengthMillimeters = mapData['cellLengthMillimeters'];
     refreshRateMilliseconds = mapData['refreshRateMilliseconds'];
     displayMap(mapData.cells);
+
     var robotsGroup = svg.append('g');
+
+    // get the status of all robots periodically from the server
     d3.interval(function () {
         d3.json('/robot_status').then(function(robotsData){
             var values = Object.values(robotsData);
             displayRobots(values, robotsGroup);
         });
     }, refreshRateMilliseconds);
-    // updateRobotsStatus();
-    // function updateRobotsStatus() {
-    //     d3.json('/robot_status').then(function(robotsData){
-    //         var values = Object.values(robotsData);
-    //         displayRobots(values, robotsGroup);
-    //     });
-    //     setTimeout(function () {
-    //         updateRobotsStatus();
-    //     }, refreshRateMilliseconds);
-    // }
 });
 
 function millimetersToPixels(x){
@@ -80,7 +70,6 @@ function displayMap(mapData){
             }
             if (data.type === 'building'){
                 return '';
-                // return 'images/' + data.shape + '.png';
             }
         })
         .attr('x', function(data) { return data['column'] * cellLengthPixels; })
