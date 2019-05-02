@@ -269,8 +269,8 @@ function displayRobots(robotsData, robotsGroup){
     group.transition().duration(refreshRateMilliseconds)
         .ease(d3.easeLinear)
         .attr('transform', transformRobot);
-    group.enter()
-        .append('svg:image')
+    var robot = group.enter().append('g');
+        robot.append('svg:image')
         .attr('transform', transformRobot)
         .attr('class', 'robot')
         .attr('xlink:href', function(data){
@@ -283,6 +283,26 @@ function displayRobots(robotsData, robotsGroup){
         })
         .attr('width', function() { return cellLengthPixels / 3.0 ; })
         .attr('height', function() { return cellLengthPixels / 3.0 ; });
+
+    robot.select('tripStatus')
+        .enter()
+        .append('svg:image')
+        .attr('xlink:href', function(data){
+            if(data['trip'] === undefined)
+            {
+                return '';
+            }
+            console.log(data);
+            switch(data['trip'].status){
+                case 'waiting':
+                    return 'images/booked.svg';
+                case 'started':
+                    return 'images/occupied.svg';
+            }
+            return '';
+        });
+
+    robot.exit().remove();
     group.exit().remove();
 }
 

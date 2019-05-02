@@ -111,6 +111,12 @@ def trip_request():
     selected_robot = get_nearest_robot(trip)
     if not selected_robot:
         abort(404, {'message': 'The trip request can not be fulfilled. Please try again later.'})
+
+    # update the dictionary
+    dictionary = app.robots_dictionary
+    dictionary.update({selected_robot.robot_id: selected_robot})
+    app.robots_dictionary.update({selected_robot.robot_id: selected_robot})
+    app.robots_dictionary = dictionary
     return jsonify(selected_robot)
 
 
@@ -124,6 +130,7 @@ def get_nearest_robot(trip):
         return None
 
     # find the nearest robot
+    idle_robots = list(idle_robots)  # convert the set to a list
     idle_robots.sort(key=lambda robot: get_distance(trip, robot))
     trip['status'] = 'started'
     selected_robot = idle_robots[0]
