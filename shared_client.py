@@ -8,9 +8,10 @@ import random
 api_url = 'http://192.168.0.12:7000/{0}'
 map_response = requests.get(api_url.format('map'))
 world_map = map_response.json()
-cell_length = world_map['cellLengthMillimeters']
-refresh_rate_milliseconds = world_map['refreshRateMilliseconds']
-start_row, start_column = world_map['startRow'], world_map['startColumn']
+cell_length: int = world_map['cellLengthMillimeters']
+refresh_rate_milliseconds: int = world_map['refreshRateMilliseconds']
+start_row: int = world_map['startRow']
+start_column: int = world_map['startColumn']
 thresholdMillimeters = world_map['thresholdMillimeters']
 
 

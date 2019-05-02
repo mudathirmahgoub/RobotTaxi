@@ -50,9 +50,9 @@ class RobotState:
         self.update_time = robot_state.update_time
         # update trip status
         if robot_state.trip:
-            if robot_state.trip.status == 'started':
-                self.trip.status = robot_state.trip.status
-            if robot_state.trip.status == 'finished':
+            if robot_state.trip['status'] == 'started':
+                self.trip['status'] = robot_state.trip['status']
+            if robot_state.trip['status'] == 'finished':
                 self.trip = None
 
 
@@ -60,4 +60,8 @@ class RobotEncoder(json.JSONEncoder):
     def default(self, json_object):
         if isinstance(json_object, datetime):
             return json_object.isoformat()
+        if isinstance(json_object, Location):
+            return json_object.__dict__
+        if isinstance(json_object, Trip):
+            return json_object.__dict__
         return json_object.__dict__
