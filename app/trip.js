@@ -270,8 +270,8 @@ function displayRobots(robotsData){
     robots.transition().duration(refreshRateMilliseconds)
         .ease(d3.easeLinear)
         .attr('transform', transformRobot);
-    var robot = robots.enter().append('g');
-        robot.append('svg:image')
+    robots.enter()
+        .append('svg:image')
         .attr('transform', transformRobot)
         .attr('class', 'robot')
         .attr('xlink:href', function(data){
@@ -285,6 +285,33 @@ function displayRobots(robotsData){
         .attr('width', function() { return cellLengthPixels / 3.0 ; })
         .attr('height', function() { return cellLengthPixels / 3.0 ; });
     robots.exit().remove();
+
+    var tripsData = [];
+    robotsData.forEach(function (data) {
+        if(data['trip'] != null){
+            tripsData.push(data);
+        }
+    });
+
+    var trips = tripsGroup
+        .selectAll('image')
+        .data(tripsData);
+    trips.transition().duration(refreshRateMilliseconds)
+        .ease(d3.easeLinear)
+        .attr('transform', transformRobot);
+    trips.enter()
+        .append('svg:image')
+        .attr('transform', transformRobot)
+        .attr('class', 'robot')
+        .attr('xlink:href', function(data){
+            if(data['trip'] === null){
+                return '';
+            }
+            return 'images/booked.svg';
+        })
+        .attr('width', function() { return cellLengthPixels / 3.0 ; })
+        .attr('height', function() { return cellLengthPixels / 3.0 ; });
+    trips.exit().remove();
 }
 
 
