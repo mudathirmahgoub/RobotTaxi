@@ -10,8 +10,8 @@ matlab_engine = matlab.engine.connect_matlab('DeepLearning')
 
 # initialize the server app
 app = Flask(__name__, static_folder='app')
-app.upload_directory = 'data'
-app.config['UPLOAD_FOLDER'] = 'data'
+app.upload_directory = 'matlab/data'
+app.config['UPLOAD_FOLDER'] = 'matlab/data'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 app.json_encoder = RobotEncoder
 app.allowed_extensions = {'jpeg'}
@@ -74,8 +74,7 @@ def classify_image(robot_id):
     if file and allowed_file(file.filename):
         client_directory = app.upload_directory + '/' + str(robot_id)
         file.save(os.path.join(client_directory, 'current_image.jpeg'))
-        matlab_engine.workspace['directory'] = client_directory
-        image_class = matlab_engine.classify_image(client_directory)
+        image_class = matlab_engine.classify_image(client_directory.replace('matlab/', ''))
         print(image_class)
         return jsonify({'id': robot_id, 'image_class': image_class})
     abort(500, {'message': f'file {file.filename} not allowed'})
