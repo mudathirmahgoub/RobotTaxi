@@ -54,6 +54,7 @@ def post_image():
 
     row, column = x // cell_length, y // cell_length
     current_row, current_column = row + start_row, column + start_column
+
     if abs(target_row - current_row) > 0 and target_column == current_column:
         y = (target_column - start_column) * cell_length
         if target_row > current_row:
@@ -85,55 +86,132 @@ def get_new_target(current_column, current_row):
             target_row = current_row + 1
         else:
             target_row = current_row - 1
-    if cell['shape'] == 'straightHorizontal':
+    elif cell['shape'] == 'straightHorizontal':
         if current_column > previous_column:
             target_column = current_column + 1
         else:
             target_column = current_column - 1
-    if cell['shape'] == 'curveBottomLeft':
+    elif cell['shape'] == 'curveBottomLeft':
         if current_row > previous_row:
             target_column = current_column + 1
         else:
-            pass
-    if cell['shape'] == 'curveBottomRight':
+            target_row = current_row - 1
+    elif cell['shape'] == 'curveBottomRight':
         if current_column > previous_column:
             target_row = current_row - 1
         else:
-            pass
-    if cell['shape'] == 'curveTopRight':
+            target_column = current_column - 1
+
+    elif cell['shape'] == 'curveTopRight':
         if current_row < previous_row:
             target_column = current_column - 1
         else:
-            pass
-    if cell['shape'] == 'curveTopLeft':
+            target_row = current_row + 1
+    elif cell['shape'] == 'curveTopLeft':
         if current_column < previous_column:
             target_row = current_row + 1
         else:
-            pass
-    if cell['shape'] == 'tRight':
-        target_row = current_row + 1
-    if cell['shape'] == 'tBottom':
-        target_column = current_column - 1
-    if cell['shape'] == 'tTop':
-        coin = random.randint(0, 1)
-        if coin == 1:  # go straight
             target_column = current_column + 1
-        else:  # turn left
-            target_row = current_row - 1
-    if cell['shape'] == 'tLeft':
-        coin = random.randint(0, 1)
-        if coin == 1:  # go straight
-            target_row = current_row - 1
-        else:  # turn left
-            target_column = current_column - 1
 
-    if cell['shape'] == 'cross':
-        coin = random.randint(0, 1)
-        if coin == 1:  # turn left
-            target_column = current_column - 1
-        else:  # go straight
+    # decision cells
+    trip_row, trip_column = get_trip_location()
+    binary_choice = random.randint(0, 1)
+    if cell['shape'] == 'tRight':
+        if rotation == 0 and binary_choice == 0:
+            target_row = current_row + 1
+        elif rotation == 0 and binary_choice == 1:
+            target_column = current_column + 1
+        elif rotation == 180 and binary_choice == 0:
             target_row = current_row - 1
+        elif rotation == 180 and binary_choice == 1:
+            target_column = current_column + 1
+        elif rotation == -90 and binary_choice == 0:
+            target_row = current_row - 1
+        else:
+            target_row = current_row + 1
+    elif cell['shape'] == 'tTop':
+        if rotation == 90 and binary_choice == 0:
+            target_row = current_row - 1
+        elif rotation == 90 and binary_choice == 1:
+            target_column = current_column + 1
+        elif rotation == -90 and binary_choice == 0:
+            target_row = current_row - 1
+        elif rotation == -90 and binary_choice == 1:
+            target_column = current_column - 1
+        elif rotation == 0 and binary_choice == 0:
+            target_column = current_column - 1
+        else:
+            target_column = current_column + 1
+    elif cell['shape'] == 'tLeft':
+        if rotation == 0 and binary_choice == 0:
+            target_row = current_row + 1
+        elif rotation == 0 and binary_choice == 1:
+            target_column = current_column - 1
+        elif rotation == 180 and binary_choice == 0:
+            target_row = current_row - 1
+        elif rotation == 180 and binary_choice == 1:
+            target_column = current_column - 1
+        elif rotation == 90 and binary_choice == 0:
+            target_row = current_row - 1
+        else:
+            target_row = current_row + 1
+    elif cell['shape'] == 'tBottom':
+        if rotation == 90 and binary_choice == 0:
+            target_row = current_row + 1
+        elif rotation == 90 and binary_choice == 1:
+            target_column = current_column + 1
+        elif rotation == -90 and binary_choice == 0:
+            target_row = current_row + 1
+        elif rotation == -90 and binary_choice == 1:
+            target_column = current_column - 1
+        elif rotation == 180 and binary_choice == 0:
+            target_column = current_column - 1
+        else:
+            target_column = current_column + 1
+    if cell['shape'] == 'cross':
+        ternary_choice = random.randint(0, 2)
+        if rotation == 0 and ternary_choice == 0:
+            target_column = current_column - 1
+        elif rotation == 0 and ternary_choice == 1:
+            target_row = current_row + 1
+        elif rotation == 0 and ternary_choice == 2:
+            target_column = current_column + 1
+        elif rotation == 180 and ternary_choice == 0:
+            target_column = current_column - 1
+        elif rotation == 180 and ternary_choice == 1:
+            target_row = current_row - 1
+        elif rotation == 180 and ternary_choice == 2:
+            target_column = current_column + 1
+        elif rotation == 90 and ternary_choice == 0:
+            target_row = current_row - 1
+        elif rotation == 90 and ternary_choice == 1:
+            target_column = current_column + 1
+        elif rotation == 90 and ternary_choice == 2:
+            target_row = current_row + 1
+        elif rotation == -90 and ternary_choice == 0:
+            target_row = current_row - 1
+        elif rotation == -90 and ternary_choice == 1:
+            target_column = current_column - 1
+        elif rotation == -90 and ternary_choice == 2:
+            target_row = current_row + 1
     previous_row, previous_column = current_row, current_column
+
+
+def get_trip_location():
+    if trip:
+        if trip.status == 'waiting':
+            trip_row, trip_column = trip.start['row'], trip.start['column']
+        elif trip.status == 'started':
+            trip_row, trip_column = trip.end['row'], trip.end['column']
+        else:
+            trip_row, trip_column = None, None
+    else:
+        trip_row, trip_column = None, None
+    return trip_row, trip_column
+
+
+def distance(current_row, current_column, trip_row,  trip_column):
+    return abs(trip_column - current_column) + abs(trip_row - current_row)
 
 
 def program():
