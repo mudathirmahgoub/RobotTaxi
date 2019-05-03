@@ -1,6 +1,6 @@
 % net = googlenet;
-run('C:\temp\robotics\RobotTaxi\create_network.mlx')
-imds = imageDatastore('training_images','IncludeSubfolders',true,'LabelSource','foldernames');
+run('C:\temp\robotics\RobotTaxi\matlab\create_network.mlx')
+imds = imageDatastore('training_images/cozmo','IncludeSubfolders',true,'LabelSource','foldernames');
 [imdsTrain,imdsValidation] = splitEachLabel(imds,0.7,'randomized');
 
 augimdsTrain = augmentedImageDatastore([224 224],imdsTrain);
@@ -16,9 +16,9 @@ options = trainingOptions('sgdm', ...
     'Verbose',false, ...
     'Plots','training-progress');
 
-netTransfer = trainNetwork(augimdsTrain,lgraph,options);
+netTransferCozmo = trainNetwork(augimdsTrain,lgraph,options);
 
-[YPred,probs] = classify(netTransfer,augimdsValidation);
+[YPred,probs] = classify(netTransferCozmo,augimdsValidation);
 accuracy = mean(YPred == imdsValidation.Labels)
 
 idx = randperm(numel(augimdsValidation.Files),4);
