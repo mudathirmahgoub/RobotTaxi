@@ -1,13 +1,18 @@
 import cozmo
 import os
 
-number_of_images = 10  # total number of the same image
-directory = 'data/training_images'  # directory for training images
-image_class = 'turn-right-right'  # the image class or label
+number_of_images = 5  # total number of the same image
+directory = 'matlab/training_images/cozmo'  # directory for training images
+image_class = 'person'  # the image class or label
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
     global directory, image_class
+    # reset lift head
+    robot.move_lift(0)
+    robot.move_head(-1)
+    # robot.set_head_angle(cozmo.util.degrees(0)).wait_for_completed()
+
     # the directory contains all images of the same class
     class_directory = f'{directory}/{image_class}'
     # create a directory for the class if it doesn't exist
