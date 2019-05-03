@@ -358,6 +358,11 @@ def cozmo_program(robot: cozmo.robot.Robot):
         image = robot.world.latest_image.raw_image
         image = image.resize((224, 224))
         image_class = post_image(image)
+        row: int = x // cell_length
+        column: int = y // cell_length
+        current_row, current_column = row + start_row, column + start_column
+        cell = get_cell(current_row, current_column)
+        print(cell)
         (left, right) = wheels_speeds.get(image_class, (0, 0))
         print(f'{image_class}: ({left},{right})')
         robot.drive_wheels(left, right)
