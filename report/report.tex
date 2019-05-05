@@ -10,6 +10,8 @@
 \usepackage{bm}
 \usepackage{booktabs}
 \usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \author{Mudathir Mahgoub}
 \title{Project report}
@@ -147,16 +149,88 @@ straight,
 turn-left-left,
 turn-left,
 turn-right-right,\text{ and}
-turn-right}
+turn-right}. The \textit{stop} class includes images where cozmo sees the rear or the front of vector, and hence the action to avoid collision is \textit{stop}. These classes didn't consider what to do in T cells \textit{tLeft, tRight, tBottom, tTop} and the \textit{cross} cell. 
 
 At this point, the server had no clue about deep learning which is totally implemented in cozmo client. This is the right decision because in a real self-driving car, you don't want the decisions to be handled remotely by a server when you can lose connection at any moment. However, the project update presentation was coming and I wanted to try multiple cozmos on the map. I couldn't ask colleagues to install Matlab just for my presentation. So I moved the deep learning part to the server, and made cozmo client sends images to the server and receives their classifications. I was worried about the delay, but it wasn't bad after reducing the speed of cozmo wheels to 50 millimeters per second.  
  
-  Include your successes and failures, and an assessment of how you met your project goals.  If you ended up modifying your goals, provide those details as well.  If you worked with another student, highlight your contributions to the project.  This component should reflect your work on the project, and your evaluation of your project.  You should also include challenges you ran into related to programming Cozmo.  For example, if I were writing such a report, I might include a warning that Cozmo may require a firmware update (through the app) in order to run, and that this update might then require an update to the SDK, and this could happen without much warning.  This observation was inspired by my experience with running my back-to-back Cozmo workshops.  I am not trying to say that you need to include this in your report.  I am just trying to give you an example of something that I experienced that I would have included in my report.  If you had problems using a particular phone to connect to Cozmo, you might mention that in your report.  You are sharing these experiences because other people might encounter them and need help...  You are telling me the story of the development of your project in this section.
+In the project update presentation, the instructor provided 2 cozmo robots and we managed to connect them to the server. But the results were mixed, sometimes the robots move on-track and sometimes off-track. Sometimes cozmo collides with other robots and sometimes it stops. I was surprised that classification works well with cozmo seeing other cozmo, even though I trained images only with cozmo seeing vector. 
+
+The instructor suggested many ideas to improve the navigation. One idea to install bumper to keep cozmo inside its lane. Another one is install stickers on lego plates to help the image recognition. A third idea is to simplify the roads and make them one-way instead of two-way. I preferred the third because it seemed the easiest one. However because of time constraint, I didn't have enough training images to get good performance on one-way roads. So I continued with two-way. 
+ 
+
+\subsection{Trips}
+
+So far in this project, I worked in achieving goals in section \ref{sec:C} and \ref{sec:A} and I didn't work trips mentioned in section \ref{sec:B}. Since trip requests are initiated by the mobile client. I started with modifying the web client to allow users to select the starting point of the trip, the destination, and the preferred robot either \textit{cozmo} or \textit{vector}. Figure \ref{fig:tripRequest} shows an example of a trip request. 
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.5]{./tripRequest.png}
+\caption{Example of a trip request.} \label{fig:tripRequest}
+\end{figure}
+
+A challenge I encountered in d3 is that you can't dynamically change the image source inside svg. To solve this issue, I added 2 layers of images one for starting points and another for destination points. Each layer contains a hidden cell in each image. When that cell is clicked, the appropriate image is displayed or hidden. Figure \ref{fig:layers} shows these 2 layers separately, but actually the destination layer is above the start layer. 
+\begin{figure}[H]
+     \center
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{./startLayer}
+         \caption{Starting points layer}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{./destinationLayer}
+         \caption{Destination points layer}
+     \end{subfigure}
+     \caption{Trip layers}
+     \label{fig:layers}
+\end{figure}
+
+
+
+As usual, I started with the mock client to implement trips. By default mock clients navigate randomly on the map. When a trip request is made, the server searches for ``nearest" robot to the starting point that matches the robot in the request. The ``nearest" robot is defined as the one with the minimum  Manhattan distance  which is defined as :
+\begin{align*}
+distance( \langle row_2, column_2\rangle, \langle row_2, column_2 \rangle) = \vert row_2 - row_1 \vert +  \vert column_2 - column_2 \vert
+\end{align*}
+
+After nearest robot is selected, it receives the trip information from the server \textit{status,  start.row, start.column,  end.row, end.column, robot\_type}. Trip \textit{status} can be: \textit{requested, waiting, started, or finished}. The initial value is \textit{requested} when the trip request is made. When the nearest robot is selected, the status is changed to \textit{waiting} and a green flag is attached to the selected robot. When the robot reaches the starting cell, the state is changed to \textit{started} and a red flag is attached to the robot. When the robot arrives to the destination, the status is changed to \textit{finished} and the robot can be used to server other trips. Figure \ref{fig:status} shows the flags that are attached to booked robots.
+
+\begin{figure}
+\center
+\includegraphics[scale=0.5]{./tripStatus.png}
+\caption{Trip status} \label{fig:status}
+\end{figure}
+
+The mock client employs a simple algorithm to server a trip request. When the mock client arrives to a cell with turns \textit{tLeft, tRight, tTop, tBottom, or cross}, it selects the cell with the minimum Manhattan distance to the starting point. After arriving to the starting point, it does the same for the destination. 
+It should be noted this is not the best approach, as it may happen that the destination is close to the starting point, but the robot follows a longer route because U-turns are not supported in this project. 
+
+\subsection{Trips and robot client}
+
+So far cozmo client did not consider turning in cells \textit{tLeft, tRight, tBottom, tTop, cross}. But with trips, they need to be supported. So I tried to train cozmo to detect these cells. the T cells proved difficult because when cozmo is on a T cell and it is moving without turning, its camera may not see the current T cell. It is possible to detect this cell if cozmo is far enough or it turns towards the crosswalk one the T-cell. Both approaches are not easy since the former needs time synchronization and the second disrupts the current movement. 
+
+I tried a different approach, that combines image classification and positioning API from cozmo. Again I am using positioning methods from Cozmo API to know its current cell. As long as the robot is on a straight cell \textit{vertical or horizontal}, it uses only image classification. When it arrives to one of the cells \textit{tLeft, tRight, tBottom, tTop, cross}, then I ignore the image classification and move to one of the neighboring cells either randomly chosen or selected based on its Manhattan distance to a target in a trip.  This approach didn't work well and suffered just like other approaches that using the positioning methods to detect the current cell is not reliable. I am convinced that using stickers like the ones in figure \ref{fig:stickers} would solve this problem.  But this is left as future work. 
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.3]{./stickers.jpg}
+\caption{Stickers that can help cozmo in detecting the current cell.}
+\label{fig:stickers}
+\end{figure}
+
+
+\subsection{Developing the vector client} 
+
+There is no much difference between cozmo and vector in terms of API. However, vector images are colored and therefore I changed them to gray (black and white) in order to use cozmo training images. This approach didn't work well, and I guess separate training images for vector may be needed. 
+For presentation, working with vector is more difficult than cozmo because it needs some configuration with the WiFi and its IP address needs to be configured each time it gets a new one. Nonetheless vector is more powerful and its movement is more stable, so finishing the vector client is left as future work. 
+
+\subsection{Detecting pedestrians}
+
+Section \ref{sec:A} mentions detecting pedestrians. I didn't have a Lego person until at the end of the project. So the trained model didn't include pedestrian images. Nonetheless during presentation with the instructor, cozmo actually stopped when a Lego person was put in front of it. However, few moments later, it had no problem hitting this person. So cozmo needs to learn about driving laws by reading more images which is left as future work. 
 
 \section{Technical details}
 Special packages that were needed in order to run your program.  Include clear set-up instructions if necessary.  For example, if your project involved using pygame or numpy, include the pip install commands to install those libraries.  You can assume that everyone is starting with having installed the Cozmo SDK, but there is no harm in explicitly mentioning that, as well as the lines to install or upgrade the SDK.  Assume that someone just learning to program in Python will be trying to replicate your work.  Screen shots are not necessary, but clear instructions are.  If your code only runs on Linux, be sure to specify that.  If your project requires a Virtual Box, or Matlab, or other ML components, be sure to include instructions on how to set those up.  You are providing technical details of your project in this section.
 
-\subsection{programming details}
+\subsection{Programming details}
 
 A link to the GitHub repository to access your code.  You are providing the programming details of your project in this section.
 
