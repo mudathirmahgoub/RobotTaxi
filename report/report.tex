@@ -227,16 +227,111 @@ For presentation, working with vector is more difficult than cozmo because it ne
 
 Section \ref{sec:A} mentions detecting pedestrians. I didn't have a Lego person until at the end of the project. So the trained model didn't include pedestrian images. Nonetheless during presentation with the instructor, cozmo actually stopped when a Lego person was put in front of it. However, few moments later, it had no problem hitting this person. So cozmo needs to learn about driving laws by reading more images which is left as future work. 
 
-\section{Technical details}
-Special packages that were needed in order to run your program.  Include clear set-up instructions if necessary.  For example, if your project involved using pygame or numpy, include the pip install commands to install those libraries.  You can assume that everyone is starting with having installed the Cozmo SDK, but there is no harm in explicitly mentioning that, as well as the lines to install or upgrade the SDK.  Assume that someone just learning to program in Python will be trying to replicate your work.  Screen shots are not necessary, but clear instructions are.  If your code only runs on Linux, be sure to specify that.  If your project requires a Virtual Box, or Matlab, or other ML components, be sure to include instructions on how to set those up.  You are providing technical details of your project in this section.
+\section{Technical details} \label{sec:technical}
+
+Here are the instructions to download and run the project:
+
+\begin{enumerate}
+\item Install python 3\footnote{Tested on 3.7} \url{https://www.python.org/downloads/}.
+\item Install Cozmo SDK 
+\begin{verbatim}
+pip3 install  cozmo[camera]
+\end{verbatim}
+To upgrade a previous version run 
+\begin{verbatim}
+pip3 install --upgrade cozmo
+\end{verbatim}
+\item Install Flask Library required by server.py
+\begin{verbatim}
+pip3 install Flask
+\end{verbatim}
+\item Install requests library needed by clients
+\begin{verbatim}
+pip3 install requests
+\end{verbatim}
+
+\item Install Matlab 2019a or later versions \url{https://www.mathworks.com}.
+\item Install MATLAB Engine API for Python\footnote{\url{https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html}}
+\begin{verbatim}
+cd "C:\Program Files\MATLAB\R2019a\extern\engines\python"
+python setup.py install
+\end{verbatim}
+\item Download or clone the project RobotTaxi:
+\begin{verbatim}
+git clone https://github.com/mudathirmahgoub/RobotTaxi
+\end{verbatim}
+\item Run Matlab and navigate to the folder matlab folder in the project by running the command below in Matlab
+\begin{verbatim}
+cd 'C:\RobotTaxi\matlab'
+\end{verbatim}
+
+\item Load the workspace that contains the trained model by running the command below in Matlab 
+\begin{verbatim}
+load('matlab.mat')
+\end{verbatim}
+\item Make the current Matlab session shared by executing the command below
+\begin{verbatim}
+matlab.engine.shareEngine('DeepLearning')
+\end{verbatim}
+
+\item Run the server.py 
+\begin{verbatim}
+python server.py
+\end{verbatim}
+
+\item Now the server is running, you can browse the web client using the server IP address. For example \url{http://192.168.0.12:7000/app/trip.html}
+\item You can now run the mock client passing cozmo or vector as an argument which is the robot type
+\begin{verbatim}
+python mock_client.py cozmo
+python mock_client.py vector
+\end{verbatim}
+
+\item To run cozmo client, put Lego road plates as shown in the figure \ref{fig:zero} below. The starting cell for cozmo is shown as well which specifies the initial position for cozmo. $(x, y, rotation) = (0,0, 0)$. The initial cell is configurable and can be changed in file \textit{map.json} where \textit{startRow}  and \textit{startColumn} specifies the initial cell.
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.4]{./zero.png}
+\caption{Initial position for cozmo. } \label{fig:zero}
+\end{figure}
+
+
+\item To take training images for cozmo and vector run the following files
+\begin{verbatim}
+python training_images_cozmo.py
+python training_images_vector.py
+\end{verbatim}
+
+You need to modify the file to change the number of images, the directory and the image class
+
+\begin{verbatim}
+number_of_images = 5  # total number of the same image
+directory = 'matlab/training_images/cozmo'  # directory for training images
+image_class = 'turn-left'  # the image class or label
+\end{verbatim}
+
+\item To train the model in Matlab, update the line below in file ``create\_network.mlx". You just need to specify the number of classes in your model. In the line below, they are 7. 
+\footnotesize
+\begin{verbatim}
+ fullyConnectedLayer(7,"Name","fc","BiasLearnRateFactor",10,"WeightLearnRateFactor",10)
+\end{verbatim}
+\normalsize
+Then run the the following command to train the model 
+\begin{verbatim}
+run('train_network.m')
+\end{verbatim}
+Finally to save the trained model save the workspace into a mat file by pressing ``ctrl+s".
+\end{enumerate}
 
 \subsection{Programming details}
 
-A link to the GitHub repository to access your code.  You are providing the programming details of your project in this section.
+The source code of the project is available in github \url{https://github.com/mudathirmahgoub/RobotTaxi}. It is written using programming languages python, javascript and Matlab. The web client source code is located in the directory \textit{app}. Matlab code is located in the directory \textit{matlab}. 
+See section \ref{sec:technical} to run the project. 
 
 \section{Acknowledgements and Gratitude}
 
-Acknowledgements and Gratitude: If you used someone else's code, or followed specific tutorials to solve problems, give those people/sources credit.  Provide links for useful resources that helped you, including DIY guides, tutorials, etc...  If someone in the class helped you address/solve problems, this would be the place to thank them.  If you benefitted from either the Dash Button or Xbox Controller activity, be sure to acknowledge that here as well.  We all benefit from the tech community, and should appreciate the shoulders of the giants who support us.  You are providing references in this section.
+I appreciate the instructor help  with the idea of this project, and how to tackle many problems arose during its development. I followed the quick start from Flask \url{http://flask.pocoo.org/docs/1.0/quickstart/} in building the server code. I learned d3 from this online course by Chris Behrens \\ \url{https://app.pluralsight.com/library/courses/d3-getting-started/table-of-contents}. I benefited  from a blog named ``Let's Make a Grid with D3.js" by Chuck Grimmett \url{http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html} which helped me in drawing the map and trip requests. The deep learning part is based on a tutorial named ``Get Started with Deep Network Designer" from Matlab \url{https://www.mathworks.com/help/deeplearning/gs/get-started-with-deep-network-designer.html}. I got the idea of how to take images from this github project by Charlie Harrington \url{https://github.com/whatrocks/cozmo-tensorflow/blob/master/cozmo-paparazzi.py}. The cozmo client takes images following the example in class in \url{https://github.com/CozmoRobots/Camera}. 
+
+I also appreciate the help from the community of stackoverflow where I find the answer to many errors I encountered. 
 
 
 \bibliographystyle{plain}
