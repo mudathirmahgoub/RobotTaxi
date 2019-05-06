@@ -21,13 +21,12 @@
 
 \section{Summary of the original project pitch}
 
-The project proposal was titled Cozmo/Vector Uber which attempts to simulate Uber service with cozmo and vector robots. In this simulation, the robot world is a small map with roads where robots navigate around without a purpose, until some one requests a trip through the mobile app. Then the closest robot selected by the app would complete the trip by moving from the starting point to the destination. The apps also enables monitoring the trip status and displaying robots movement on the map.  With this simulation, ``Robot Taxi" perhaps a better title than ``Cozmo/Vector Uber" because Uber supports shared taxi which is beyond the project 
-scope. 
+The project proposal was titled Cozmo/Vector Uber which attempts to simulate Uber service with cozmo and vector robots. In this simulation, the robot world is a small map with roads where robots navigate around without a purpose, until some one requests a trip through the mobile app. Then the closest robot selected by the app would complete the trip by moving from the starting point to the destination. The app also  monitors trip status and displays robots movement on the map.  With this description, perhaps ``Robot Taxi" is a better name than ``Cozmo/Vector Uber" because Uber supports shared taxi which is beyond the scope of this project.
 
 The project goals can be divided into 3 components described next. 
 
 \subsection{Baseline goals for grade C} \label{sec:C}
-The idea here is to implement the infrastructure needed for the simulation. The core of this infrastructure is a map with roads and buildings that is complex enough to support reasonable simulation. By reasonable simulation, I mean one that have multiple paths for the same trip to allow simple trip planning and shortest route computation. At the same time, the simulation doesn't need to be too complex to reflect the real world which would be too expensive, but abstract enough to capture the main component of Uber service. After some thinking I settled on the map shown in figure \ref{fig:proposedMap}. To build that map, lego road plates and buildings were suggested. 
+The idea here is to implement the infrastructure needed for the simulation. The core of this infrastructure is a map, with roads and buildings, that is complex enough to support reasonable simulation. By reasonable simulation, I mean one that has multiple paths for the same trip to allow simple trip planning and shortest route computation. At the same time, the simulation doesn't need to be too complex to simulate every aspect of Uber which would be infeasible. It should be abstract enough to capture the main components of Uber service. After some thinking I settled on the map shown in figure \ref{fig:proposedMap}. To build that map, lego road plates and buildings were proposed. 
 \begin{figure}[H]
 \center
 \includegraphics[scale=0.5]{./original_map.png}
@@ -35,80 +34,80 @@ The idea here is to implement the infrastructure needed for the simulation. The 
 \end{figure}
 
 
-To implement the infrastructure for other components, the following goals were suggested: 
+To implement the infrastructure for other components, the following goals were proposed: 
 
 \begin{itemize}
-\item Develop a server that assigns a new identifier to each connected robot client and monitors its current location
+\item Develop a server that assigns a new identifier to each connected robot client and monitors its current location.
 
-\item Develop a robot client that connects to the server and periodically sends its status and current location to the server
+\item Develop a robot client that connects to the server and periodically sends its status and current location to the server.
 
-\item Develop a mobile app client which displays a map and the current locations of all robots connected to the server
+\item Develop a mobile app client which displays a map and the current locations of all robots connected to the server.
 \end{itemize}
 \subsection{Additional components for grade B} \label{sec:B}
 
-After implementing the infrastructure, the next step is to support trips. To do that, the following goals  were suggested:
+After implementing the infrastructure, the next step is to support trips. To do that, the following goals  were proposed:
 
 \begin{itemize}
-\item Add the feature of trip requests to the mobile app which enables the user to specify the starting point and destination point on the map. Unlike real world, in this world the mobile doesn’t have a GPS to detect its current location. The user can also specify the type of the robots: either spartan Cozmo or luxurious Vector. 
+\item Add the feature of trip requests to the mobile app which enables the user to specify the starting point and destination point on the map. Unlike the real world, in this world the mobile does not have a GPS to detect its current location. The user can specify the type of the robots: either spartan Cozmo or luxurious Vector. 
 
-\item Add the trip planning feature to the server. For each trip request, the server identifies the nearest available robot and computes first the shortest route from the robot location to the  starting point, and then computes the shortest route from the starting point to the destination. The server then sends these routes to the selected robot
+\item Add the trip planning feature to the server. For each trip request, the server identifies the nearest available robot and computes first the shortest route from the robot location to the  starting point, and then computes the shortest route from the starting point to the destination. The server then sends these routes to the selected robot.
 
-\item Update the robot client to receive a trip plan and execute it
+\item Update the robot client to receive a trip plan and execute it.
 
 \end{itemize}
 
 \subsection{Top tier features for grade A} \label{sec:A}
 
-To add some intelligence to the robot to avoid colliding with pedestrians and other robots,  the following goals were suggested:
+To add some intelligence to the robot to avoid colliding with pedestrians and other robots,  the following goals were proposed:
 
 \begin{itemize}
-\item Build a neural network model to determine robot actions
-\item Process images taken by the robot camera 
-\item Stop all maneuvers if a person crossing the street is detected
+\item Build a neural network model to determine robot actions.
+\item Process images taken by the camera. 
+\item Stop all maneuvers if a person or a robot is detected to avoid collision. 
 \end{itemize}
 
 \section{Evaluation of project progress}
 Here is the story of the project progress since the proposal. 
 \subsection{Building the map}
-The original proposal for the map included buildings which would make the simulation pretty fancy. However, I After finding that the city buildings from Lego are too expensive, I moved them out of the project since they have little role in the implementation. Now that I reflect on project, perhaps these buildings would help in the deep learning by stopping the robots from going outside the roads. Also I could ask the kids in the family to build classic buildings from small pieces and bricks. 
+The original proposal for the map included buildings which would make the simulation pretty fancy. However, after finding that the city buildings from Lego are too expensive, I moved them out of the project since they have little role in the implementation. Now that I am reflecting on the project, perhaps these buildings would help in the deep learning by stopping the robots from going outside the roads. The expenses could have been reduced if buildings were constructed from classical Lego small pieces and bricks. This can be done as future work, and I imagine kids would love to participate in constructing these buildings. 
 
-For road plates I was looking for square turns to simplify the turns movements in corners. When I didn't find them I settled for rounded corners and the new map is shown in figure \ref{fig:map}.
+For road plates I looked for square corners to simplify the navigation around corners. However, it seems Lego doesn't offer square corners, so  I settled for rounded corners which changed the map a little bit to look like figure \ref{fig:proposedMap}.
 
 \begin{figure}[H]
 \center
 \includegraphics[scale=0.5]{./map.png}
-\caption{The new world with empty white lands} \label{fig:proposedMap} 
+\caption{The new world with empty white lands (without buildings).} \label{fig:proposedMap} 
 \end{figure}
 
 \subsection{Developing the server}
-The natural next step after the map is to implement the server. Since the server plays a central role in the project and interacts with robots and mobile clients supporting different requests and responses, I chose Restful API approach with JSON to simplify the implementation. Since I was new to python, I looked for libraries that support Rest API and it seems Flask\footnote{\url{http://flask.pocoo.org/}} is a popular one. So I spent some time learning it and started implementing the server tasks. 
+The next step after building the map is implementing the server. The server plays a central role in the project, and interacts with robots and mobile clients supporting different requests and responses. Therefore I chose Restful API approach with JSON to simplify the implementation. Since I was new to python, I looked for libraries that support Rest API and it seems Flask\footnote{\url{http://flask.pocoo.org/}} is a popular one. So I spent some time learning it and started implementing the server tasks. 
 
-The first task was assigning new identity to each new robot (which simulates Uber driver and car registration in real life). The first challenge was storing the ids of the robots. In real life, I imagine Uber storing the registration information in a secure database. Since security and persistence  are not concerns in this project and database is overkill, I preferred to use the simple dictionary data struture in python to act as a storage for robots information. The next challenge was a consequence of using a dictionary. Since no primary key restriction is forced in the dictionary data structure, multiple robots can get the same id if their requests arrive at the same time. So I followed the basic mutex synchronization by using the lock objects provided by the threading library in python. 
+The first task was assigning a unique identity to each robot (which simulates Uber driver and car registration in real life). The first challenge was storing the ids of the robots. In real life, I imagine Uber storing the registration information in a secure database. Since security and persistence  are not concerns in this project, the database is overkill. So I preferred using a simple data structure in memory (dictionary in python) to act as a storage for robots information. The next challenge was a consequence of using a dictionary. Since no primary key restriction is forced in the dictionary data structure, multiple robots can get the same id if their requests arrive at the same time. So I followed the basic mutex synchronization by using the lock objects provided by the threading library in python. 
 
 
-Now that the server can assign a unique id to each robot, what comes next is to determine what to store in the dictionary. So I created a new class named \textbf{RobotState}:(\textit{robot\_id, robot\_type, x, y, rotation, update\_time}). Then I created server methods that supports getting and posting robot status, and created some unit tests to make sure that are working. 
+Now that the server can assign a unique id to each robot, what comes next is to determine what to store in the dictionary. So I created a new class named \textbf{RobotState}:(\textit{robot\_id, robot\_type, x, y, rotation, update\_time}) which would be updated later to include trip information. Then I created server methods that support getting and posting robot status, and created some unit tests to make sure they are working as expected. 
 
 \subsection{Developing the mobile client}
 
-Now that the server supports simple features, the next step is to implement one of the clients: either the mobile client or the robot client. I decided to implement the mobile client first, since it is purely software which is faster than cozmo programming. Also implementing the mobile app would help me understand the requirements better, and clarify what is needed from robot clients. 
+Now that the server supports simple features, the next step is to implement one of the clients: either the mobile client or the robot client. I decided to implement the mobile client first, since it is faster and purely software. Implementing the mobile app first would also in understanding the requirements for the robot client. 
 
-For the mobile app, I needed to display the map, locations of connected robots, and animation for their movements. At first I thought of implementing the mobile app on android devices. Then I remembered my experience with xbox controller in class where many students didn't participate because they had Mac laptops. So cross platforms compatibility is an issue.  Another issue was that cozmo already requires a mobile device, so I would need 2 android devices: one for cozmo and one for the mobile app which would make development painful and unnecessary complicated. Fortunately,  the solution to such problems is straightforward: developing a web page which is accessible by web browsers in all platforms including mobile devices. So it was time to refresh my rusty knowledge about javascript language. 
-
-
-The first challenge I encountered, is how to draw maps and animations on a web page. My basic javascript skills didn't know how to do that then. So it was time again to look for libraries specialized on animation. The search result was D3 \footnote{\url{https://d3js.org/}} which stands for Data-Driven Documents. Its gallery\footnote{\url{https://github.com/d3/d3/wiki/Gallery}} looks very exciting with graphs, maps and animation. But I didn't know where to start from just the documentation. So I watched the online course \textit{d3-getting-started} from pluralsight\footnote{\textit{https://app.pluralsight.com/library/courses/d3-getting-started/table-of-contents}} to get started as its title says. After reading an article\footnote{\url{http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html}} about drawing a grid using d3, I knew what to do and started coding. 
+For the mobile app, I need to display the map, locations of connected robots, and animation for their movements. At first I thought of implementing the mobile app on android devices. But since many students use IPhone, cross platforms compatibility would be an issue.  Another issue was that cozmo already requires a mobile device, so I would need 2 android devices: one for cozmo, and one for the mobile app. This would make the development painful and unnecessary complicated. Fortunately,  the solution to such problems is straightforward: developing a web page which is accessible by web browsers in all platforms including mobile devices. So it was time to refresh my rusty knowledge about javascript language. 
 
 
-The first thing to draw was the map. To avoid hard coding the map, I created a Json file to store the map as cells. Each cell has the properties \textit{column, row, type, shape}. The cell type could be \textit{building} or \textit{road}. Since I am ignoring buildings their shapes don't matter. A road cell can have one of the following shapes: \textit{straightHorizontal, straightVertical, curveTopLeft, curveBottomLeft, curveBottomRigt, curveTopRight, tRight, tBottom, tLeft, tTop} and \textit{cross}.
+The first challenge I encountered, is how to draw maps and animations on a web page. Back then, my  basic javascript knowledge  didn't include drawing. So it was time  to look for libraries specialized on that. The search result was D3\footnote{\url{https://d3js.org/}} which stands for Data-Driven Documents. Its gallery\footnote{\url{https://github.com/d3/d3/wiki/Gallery}} looks very exciting with graphs, maps and animation. To learn D3 I watched the online course \textit{d3-getting-started} from pluralsight\footnote{\textit{https://app.pluralsight.com/library/courses/d3-getting-started/table-of-contents}} to get started as its title says. After reading an article\footnote{\url{http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html}} about drawing a grid using d3, I knew what to do and started coding. 
 
-Since web pages can't access files in the client machine, I made a special API for maps in the server so that the web page can retrieve the map when page content are loaded. When the map reached the web client, each cell gets drawn according to its type and shape. The next step is to draw some robots. 
+
+The first thing to draw was the map. To avoid hard coding the map, I created a Json file to store the map as cells. Each cell has the properties \textit{column, row, type, shape}. The cell type could be \textit{building} or \textit{road}. The shape of the building is not important and has no effect in the simulation. A road cell can have one of the following shapes: \textit{straightHorizontal, straightVertical, curveTopLeft, curveBottomLeft, curveBottomRigt, curveTopRight, tRight, tBottom, tLeft, tTop} and \textit{cross}.
+
+Since web pages can't access files in the client machine, I made a special API for the map in the server so that the web page can retrieve the map when page content is loaded. When the map reaches the web client, each cell gets drawn according to its type and shape as shown in figure \ref{fig:proposedMap}. The next step is drawing some robots. 
 
 \subsection{Developing the robot mock client}
 
-After displaying the map on the web client, it is natural to implement cozmo client next. However I was reluctant to do that immediately for a couple of reasons: First I have only one cozmo, so I would only see one robot on the map if I implemented it first, Second cozmo development needs more time and configuration because it has hardware components and needs charging, third I would use 3 devices at the same time, Desktop, mobile and cozmo itself. So a \textit{mock client} that is purely software, simulates cozmo, doesn't need charging,  and requires only the desktop sounded very reasonable. 
+After displaying the map on the web client, it is natural to implement cozmo client next. However I was reluctant to do that immediately for two reasons. First I have only one cozmo, so I would only see one robot on the map if I implemented it first. Second cozmo development needs more time and configuration because it has hardware components and needs charging. So a \textit{mock client} that is purely software, simulates cozmo, doesn't need charging,  and requires only the desktop sounded very reasonable. 
 
-Initially I ran multiple mock clients at once without movement. The web client displayed them correctly but it wasn't fun because no animation was involved. To do animation I had to implement random movements for the robot based on their current location. Since d3 uses CSS transitions for animation, I didn't need to implement movements on the pixel level. The cell level (which is 80 pixel) was enough for d3 to its magic. So all I needed is to move the mock robot from one road cell to a neighbor cell. Since backward movements and U-turns are not supported, the robot has at most 3 options depending on shape of its current cell: \textit{go straight}, \textit{turn right} or \textit{turn left}. 
+Initially I ran multiple mock clients at once without movement. The web client displayed them correctly but it wasn't fun because no animation was involved. To do animation I had to implement random movements for the robot based on their current location. Since d3 uses CSS transitions for animation, I didn't need to implement movements on the pixel level. The cell level (which is 80 pixel) was enough for d3 to do its magic. So all I needed is to move the mock robot from one road cell to a neighbor cell. Since backward movements and U-turns are not supported, the robot has at most 3 options depending on shape of its current cell: \textit{go straight}, \textit{turn right} or \textit{turn left}. 
 
-For simplicity the mock client supports only 4 rotations: \textit{down} with rotation angle 0, \textit{up} with rotation down 180, \textit{right} with rotation angle 90, and \textit{left} with rotation \textit{180}. A challenge related to rotations was displaying them correctly using d3. Only \textit{down} rotation works perfectly. Other rotations are little off and it seems their geometric calculations need revisiting. With this, I thought I know what need to be done with the real client (cozmo client). How wrong I was is described next. 
+For simplicity the mock client supports only 4 rotations: \textit{down} with rotation angle 0, \textit{up} with rotation angle 180, \textit{right} with rotation angle 90, and \textit{left} with rotation \textit{-90}. A challenge related to rotations was displaying them correctly using d3. Only \textit{down} rotation works perfectly. Other rotations are little off and it seems their geometric calculations need revisiting. With this, I thought I know what need to be done with the real client (cozmo client). How naive I was is described next. 
 
 \subsection{Developing the cozmo client} \label{sec:failures}
 
@@ -116,7 +115,7 @@ Like the mock client, the plan for the cozmo client is to determine its current 
 
 It was really frustrating trying to navigate cozmo correctly on the map. First I tried controlling its wheels based on its positions, but that failed miserably. Then I tried computing the position myself following discrete movements to avoid positioning methods from cozmo API as follows:
 \begin{itemize}
-\item Start with \textit{current position} =$(x, y, rotation) = (0, 0, 0)$.
+\item Start with \textit{current position} $=(x, y, rotation) = (0, 0, 0)$.
 \item Use discrete actions to move cozmo to the next cell based on \textit{current position} which determines the \textit{current cell}. An example: 
 \begin{enumerate}
 \item $drive\_straight(distance)$
@@ -126,7 +125,7 @@ It was really frustrating trying to navigate cozmo correctly on the map. First I
 \item Update \textit{current cell} after completing the actions. After executing the above actions the \textit{current position} would be $(x, y, rotation) = (distance, 0, angle)$
 \end{itemize}
 
-This second approach also failed because  $turn\_in\_place(angle)$ was not reliable. I was stuck at this point, so I postponed cozmo client and decided to do other things in the project. Since section \ref{sec:B} depends on cozmo client, I focused on accomplishing the goals in section \ref{sec:A}. 
+This second approach also failed because  $turn\_in\_place(angle)$ was not reliable. I was stuck at this point, so I postponed cozmo client and decided to do other things in the project. Since section \ref{sec:B} depends on cozmo client, I skipped it and focused on accomplishing the goals in section \ref{sec:A}. 
 
 \subsection{Deep learning}
 Using deep learning in an application was something new to me. So I asked around and people suggested using 
