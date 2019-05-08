@@ -125,21 +125,21 @@ It was really frustrating trying to navigate cozmo correctly on the map. First I
 \item Update \textit{current cell} after completing the actions. After executing the above actions the \textit{current position} would be $(x, y, rotation) = (distance, 0, angle)$
 \end{itemize}
 
-This second approach also failed because  $turn\_in\_place(angle)$ was not reliable. I was stuck at this point, so I postponed cozmo client and decided to do other things in the project. Since section \ref{sec:B} depends on cozmo client, I skipped it and focused on accomplishing the goals in section \ref{sec:A}. 
+This second approach also failed because  $turn\_in\_place(angle)$ was not reliable. I was stuck at this point, so I postponed cozmo client and decided to do other things in the project. Since section \ref{sec:B} depends on cozmo client, I skipped it and focused on achieving the goals in section \ref{sec:A}. 
 
 \subsection{Deep learning}
 Using deep learning in an application was something new to me. So I asked around and people suggested using 
  TensorFlow\footnote{\url{https://www.tensorflow.org/}} library for python. After many attempts, I wasn't able to successfully install TensorFlow in my Windows machine. People suggested to me to use Anaconda platform\footnote{https://www.anaconda.com/distribution} to install python packages including TensorFlow. That also didn't work in Windows. So I gave up on using TensorFlow and decided to check deep learning in Matlab, an environment I am familiar with. 
  
-It turned out that Matlab has a really nice deep learning framework and comes with  a nice GUI called Deep learning Network analyzer. After following their get-started tutorial\footnote{https://www.mathworks.com/help/deeplearning/gs/get-started-with-deep-network-designer.html}, I found that all I need to do is to put the training images in labeled folders and specify the number of classes to Matlab and then let it do its magic. Matlab deep learning framework automatically figures out GPU supports, display training progress, and outputs the result into a variable in the workspace.  It was really nice experience compared to TensorFlow. 
+It turned out that Matlab has a really nice deep learning framework and comes with  a nice GUI called Deep learning Network analyzer. After following their get-started tutorial\footnote{https://www.mathworks.com/help/deeplearning/gs/get-started-with-deep-network-designer.html}, I found that all I need to do is to put the training images in labeled folders and specify the number of classes to Matlab and then let it handle the rest. Matlab deep learning framework automatically figures out GPU support, displays training progress, and outputs the result into a variable in the workspace.  It was really nice experience compared to TensorFlow. 
 
 
-Next I took some sample images with cozmo to try Matlab deep learning. After training was finished, I looked on how to import the trained models from Matlab into python. There is an open neural network exchange format called ONNX\footnote{\url{https://onnx.ai}} whihch is supported by TensorFlow, Matlab, and other deep learning frameworks. To install onnx for python, it requires a C++ library called Protobuf\footnote{\url{https://github.com/protocolbuffers/protobuf}}. After many attempts, I failed to successfully install onnx. So
+Next I took some sample images with cozmo to try Matlab deep learning. After training was finished, I looked on how to import the trained models from Matlab into python. There is an open neural network exchange format called ONNX\footnote{\url{https://onnx.ai}} which is supported by TensorFlow, Matlab, and other deep learning frameworks. To install onnx for python, it requires a C++ library called Protobuf\footnote{\url{https://github.com/protocolbuffers/protobuf}}. After many attempts, I failed to successfully install onnx. So
 I gave up on onnx and decided to use only Matlab and python. 
 
-It turned out Matlab comes with python engine support\footnote{\url{https://www.mathworks.com/help/matlab/matlab_external/get-started-with-matlab-engine-for-python.html}} which enables python to connect to Matlab and call its functions and scripts. After installing this python engine\footnote{\url{https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html}} there are 2 options to connect to Matlab, starting a new session from python which takes time until a new Matlab session is started, or share abn existing session. I found that sharing an an already opened Matlab is more convenient, because it is instantaneous and I can see the workspace used by python. Now the deep learning environment is ready for cozmo.  
+It turned out Matlab comes with python engine support\footnote{\url{https://www.mathworks.com/help/matlab/matlab_external/get-started-with-matlab-engine-for-python.html}} which enables python to connect to Matlab and call its functions and scripts. After installing this python engine\footnote{\url{https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html}} there are 2 options to connect to Matlab: starting a new session from python which waits until a new Matlab session is started, or sharing an existing session. I found that sharing an an already opened Matlab is more convenient, because it is instantaneous and I can see the workspace used by python. Now the deep learning environment is ready for cozmo.  
 
-After playing with small number of images taken by cozmo, I thought of using deep learning to solve the issues I encountered in section \ref{sec:failures}. Since I need only 3 movement actions \textit{go-stright, turn-left, turn-right}, I can take images related to these 3 classes. After doing that the results were really promising that I totally changed my approach to cozmo client: Instead of trying to compute the next action based on the current cell, let the deep learning handle that. To do that I started seriously taking a lot of training images and classified them into 9 classes: 
+After playing with small number of images taken by cozmo, I thought of using deep learning to solve the issues I encountered in section \ref{sec:failures}. Since I need only 3 movement actions \textit{go-stright, turn-left, turn-right}, I can take images related to these 3 classes. After doing that the results were really promising that I totally changed my approach to cozmo client. Instead of trying to compute the next action based on the current cell, let the deep learning handle that. I started seriously taking a lot of training images and classified them into 9 classes: 
 \textit{corner-left,
 corner-right,
 cross,
@@ -148,18 +148,18 @@ straight,
 turn-left-left,
 turn-left,
 turn-right-right,\text{ and}
-turn-right}. The \textit{stop} class includes images where cozmo sees the rear or the front of vector, and hence the action to avoid collision is \textit{stop}. These classes didn't consider what to do in T cells \textit{tLeft, tRight, tBottom, tTop} and the \textit{cross} cell. 
+turn-right}. The \textit{stop} class includes images where cozmo sees the rear or the front of vector, and hence the action to avoid collision is to \textit{stop}. These classes didn't consider what to do in T cells (\textit{tLeft, tRight, tBottom, tTop}) and the \textit{cross} cell. 
 
 At this point, the server had no clue about deep learning which is totally implemented in cozmo client. This is the right decision because in a real self-driving car, you don't want the decisions to be handled remotely by a server when you can lose connection at any moment. However, the project update presentation was coming and I wanted to try multiple cozmos on the map. I couldn't ask colleagues to install Matlab just for my presentation. So I moved the deep learning part to the server, and made cozmo client sends images to the server and receives their classifications. I was worried about the delay, but it wasn't bad after reducing the speed of cozmo wheels to 50 millimeters per second.  
  
 In the project update presentation, the instructor provided 2 cozmo robots and we managed to connect them to the server. But the results were mixed, sometimes the robots move on-track and sometimes off-track. Sometimes cozmo collides with other robots and sometimes it stops. I was surprised that classification works well with cozmo seeing other cozmo, even though I trained images only with cozmo seeing vector. 
 
-The instructor suggested many ideas to improve the navigation. One idea to install bumper to keep cozmo inside its lane. Another one is install stickers on lego plates to help the image recognition. A third idea is to simplify the roads and make them one-way instead of two-way. I preferred the third because it seemed the easiest one. However because of time constraint, I didn't have enough training images to get good performance on one-way roads. So I continued with two-way. 
+The instructor suggested many ideas to improve the navigation. One idea is installing bumpers to keep cozmo inside its lane. Another one is putting stickers on lego plates to help the image recognition. A third idea is simplifying roads and make them one-way instead of two-way. I preferred the third because it seemed the easiest one. However because of time constraint, I didn't have enough training images to get good performance on one-way roads. So I continued with two-way. 
  
 
 \subsection{Trips}
 
-So far in this project, I worked in achieving goals in section \ref{sec:C} and \ref{sec:A} and I didn't work trips mentioned in section \ref{sec:B}. Since trip requests are initiated by the mobile client. I started with modifying the web client to allow users to select the starting point of the trip, the destination, and the preferred robot either \textit{cozmo} or \textit{vector}. Figure \ref{fig:tripRequest} shows an example of a trip request. 
+So far in this project, I worked in achieving goals in section \ref{sec:C} and \ref{sec:A} and I didn't work in trips which are mentioned in section \ref{sec:B}. Since trip requests are initiated by the mobile client. I started with modifying the web client to allow users to select the starting point of the trip, the destination, and the preferred robot which is either \textit{cozmo} or \textit{vector}. Figure \ref{fig:tripRequest} shows an example of a trip request. 
 
 \begin{figure}[H]
 \center
@@ -167,7 +167,7 @@ So far in this project, I worked in achieving goals in section \ref{sec:C} and \
 \caption{Example of a trip request.} \label{fig:tripRequest}
 \end{figure}
 
-A challenge I encountered in d3 is that you can't dynamically change the image source inside svg. To solve this issue, I added 2 layers of images one for starting points and another for destination points. Each layer contains a hidden cell in each image. When that cell is clicked, the appropriate image is displayed or hidden. Figure \ref{fig:layers} shows these 2 layers separately, but actually the destination layer is above the start layer. 
+A challenge I encountered in d3 is dynamically changing the images inside svg element (Scalable Vector Graphics). To solve this challenge, I added 2 layers of images: one for starting points, and another for destination points. Each layer contains a hidden image in each cell. When a cell is clicked, the appropriate image is displayed or hidden. Figure \ref{fig:layers} shows these 2 layers separately, but actually the destination layer is exactly above the start layer. 
 \begin{figure}[H]
      \center
      \begin{subfigure}[b]{0.45\textwidth}
@@ -181,33 +181,33 @@ A challenge I encountered in d3 is that you can't dynamically change the image s
          \includegraphics[width=\textwidth]{./destinationLayer}
          \caption{Destination points layer}
      \end{subfigure}
-     \caption{Trip layers}
+     \caption{Trip layers.}
      \label{fig:layers}
 \end{figure}
 
 
 
-As usual, I started with the mock client to implement trips. By default mock clients navigate randomly on the map. When a trip request is made, the server searches for ``nearest" robot to the starting point that matches the robot in the request. The ``nearest" robot is defined as the one with the minimum  Manhattan distance  which is defined as :
+As usual, I started with the mock client to implement trips. By default mock clients navigate randomly on the map. When a trip request is made, the server searches for ``nearest" robot to the starting point that matches the robot type in the request. The ``nearest" robot is defined as the one with the minimum  Manhattan distance  which is defined as :
 \begin{align*}
 distance( \langle row_2, column_2\rangle, \langle row_2, column_2 \rangle) = \vert row_2 - row_1 \vert +  \vert column_2 - column_2 \vert
 \end{align*}
 
-After nearest robot is selected, it receives the trip information from the server \textit{status,  start.row, start.column,  end.row, end.column, robot\_type}. Trip \textit{status} can be: \textit{requested, waiting, started, or finished}. The initial value is \textit{requested} when the trip request is made. When the nearest robot is selected, the status is changed to \textit{waiting} and a green flag is attached to the selected robot. When the robot reaches the starting cell, the state is changed to \textit{started} and a red flag is attached to the robot. When the robot arrives to the destination, the status is changed to \textit{finished} and the robot can be used to server other trips. Figure \ref{fig:status} shows the flags that are attached to booked robots.
+After nearest robot is selected, it receives the trip information from the server (\textit{status,  start.row, start.column,  end.row, end.column, robot\_type}). Trip \textit{status} can be: \textit{requested, waiting, started, or finished}. The initial value is \textit{requested} when the trip request is made. When the nearest robot is selected, the status is changed to \textit{waiting} and a green flag is attached to the selected robot. When the robot reaches the starting cell, the state is changed to \textit{started} and a red flag is attached to the robot. When the robot arrives to the destination, the status is changed to \textit{finished} and its flag is removed to indicate that the robot is available to  serve other trips. Figure \ref{fig:status} shows the flags that are attached to booked robots.
 
 \begin{figure}
 \center
 \includegraphics[scale=0.5]{./tripStatus.png}
-\caption{Trip status} \label{fig:status}
+\caption{Trip status.} \label{fig:status}
 \end{figure}
 
-The mock client employs a simple algorithm to server a trip request. When the mock client arrives to a cell with turns \textit{tLeft, tRight, tTop, tBottom, or cross}, it selects the cell with the minimum Manhattan distance to the starting point. After arriving to the starting point, it does the same for the destination. 
-It should be noted this is not the best approach, as it may happen that the destination is close to the starting point, but the robot follows a longer route because U-turns are not supported in this project. 
+The mock client employs a simple algorithm to fulfill a trip request. When the mock client arrives to a cell with turns \textit{tLeft, tRight, tTop, tBottom, or cross}, it selects the cell with the minimum Manhattan distance to the starting point. After arriving to the starting point, it does the same for the destination. 
+It should be noted this is not the best approach with the shortest route, but I am satisfied with it for the purpose of this project. A better approach wouldn't consider the starting point and destination separately, but would consider them together to reduce the total distance covered by the robot to complete the trip. With the current implementation, it may happen that the destination is close to the starting point, but the robot follows a longer route because U-turns are not supported in this project. 
 
 \subsection{Trips and robot client}
 
-So far cozmo client did not consider turning in cells \textit{tLeft, tRight, tBottom, tTop, cross}. But with trips, they need to be supported. So I tried to train cozmo to detect these cells. the T cells proved difficult because when cozmo is on a T cell and it is moving without turning, its camera may not see the current T cell. It is possible to detect this cell if cozmo is far enough or it turns towards the crosswalk one the T-cell. Both approaches are not easy since the former needs time synchronization and the second disrupts the current movement. 
+So far cozmo client did not consider turning in cells \textit{tLeft, tRight, tBottom, tTop, cross}. But with trips, they need to be supported. So I tried to train cozmo to detect these cells. the T cells proved difficult because when cozmo is on a T cell and it is moving without turning, its camera may not see the current T cell. It is possible to detect this cell if cozmo is far enough or it turns towards the crosswalk on the T-cell. Both approaches are not easy since the former needs time synchronization, and the second disrupts the current movement. 
 
-I tried a different approach, that combines image classification and positioning API from cozmo. Again I am using positioning methods from Cozmo API to know its current cell. As long as the robot is on a straight cell \textit{vertical or horizontal}, it uses only image classification. When it arrives to one of the cells \textit{tLeft, tRight, tBottom, tTop, cross}, then I ignore the image classification and move to one of the neighboring cells either randomly chosen or selected based on its Manhattan distance to a target in a trip.  This approach didn't work well and suffered just like other approaches that using the positioning methods to detect the current cell is not reliable. I am convinced that using stickers like the ones in figure \ref{fig:stickers} would solve this problem.  But this is left as future work. 
+I tried a different approach, that combines image classification and positioning API from cozmo. Again I am using positioning methods from Cozmo API to know its current cell. As long as the robot is on a straight cell \textit{vertical or horizontal}, it uses only image classification. When it arrives to one of the cells \textit{tLeft, tRight, tBottom, tTop, cross}, then I ignore the image classification and move to one of the neighboring cells either randomly or  based on Manhattan distance to a target in a trip.  This approach didn't work well and suffered just like other approaches because positioning methods are not that reliable. At this point, I am convinced that the stickers option (figure \ref{fig:stickers}) suggested by the instructor could solve this problem. This is left as future work. 
 
 \begin{figure}[H]
 \center
@@ -219,12 +219,12 @@ I tried a different approach, that combines image classification and positioning
 
 \subsection{Developing the vector client} 
 
-There is no much difference between cozmo and vector in terms of API. However, vector images are colored and therefore I changed them to gray (black and white) in order to use cozmo training images. This approach didn't work well, and I guess separate training images for vector may be needed. 
-For presentation, working with vector is more difficult than cozmo because it needs some configuration with the WiFi and its IP address needs to be configured each time it gets a new one. Nonetheless vector is more powerful and its movement is more stable, so finishing the vector client is left as future work. 
+There is no much difference between cozmo and vector in terms of API. However, vector images are colored and therefore I changed them to gray (black and white) in order to use cozmo trained model. This approach didn't work well, and I guess separate training images for vector may be needed. 
+For presentation, working with vector is more difficult than cozmo because it needs some configuration with the WiFi, and its IP address needs to be configured each time it gets a new one. Nonetheless vector is more powerful and its movement is more stable, so finishing the vector client is left as future work. 
 
 \subsection{Detecting pedestrians}
 
-Section \ref{sec:A} mentions detecting pedestrians. I didn't have a Lego person until at the end of the project. So the trained model didn't include pedestrian images. Nonetheless during presentation with the instructor, cozmo actually stopped when a Lego person was put in front of it. However, few moments later, it had no problem hitting this person. So cozmo needs to learn about driving laws by reading more images which is left as future work. 
+Section \ref{sec:A} mentions detecting pedestrians. I didn't buy a Lego person until the end of the project. So the trained model didn't include pedestrian images. Nonetheless during presentation with the instructor, cozmo actually stopped when a Lego person was put in front of it. However, few moments later, it had no problem hitting this person. So cozmo needs to learn about driving laws by reading more images which is left as future work. 
 
 \section{Technical details} \label{sec:technical}
 
@@ -259,7 +259,7 @@ python setup.py install
 \begin{verbatim}
 git clone https://github.com/mudathirmahgoub/RobotTaxi
 \end{verbatim}
-\item Run Matlab and navigate to the folder matlab folder in the project by running the command below in Matlab
+\item Run Matlab and navigate to the matlab folder in the project by running the command below in Matlab
 \begin{verbatim}
 cd 'C:\RobotTaxi\matlab'
 \end{verbatim}
@@ -279,13 +279,16 @@ python server.py
 \end{verbatim}
 
 \item Now the server is running, you can browse the web client using the server IP address. For example \url{http://192.168.0.12:7000/app/trip.html}
-\item You can now run the mock client passing cozmo or vector as an argument which is the robot type
+\item You can now run the mock client and  pass either \textit{cozmo} or \textit{vector} as an argument which determines the robot type
 \begin{verbatim}
 python mock_client.py cozmo
 python mock_client.py vector
 \end{verbatim}
 
-\item To run cozmo client, put Lego road plates as shown in the figure \ref{fig:zero} below. The starting cell for cozmo is shown as well which specifies the initial position for cozmo. $(x, y, rotation) = (0,0, 0)$. The initial cell is configurable and can be changed in file \textit{map.json} where \textit{startRow}  and \textit{startColumn} specifies the initial cell.
+\item To run cozmo client, put Lego road plates as shown in the figure \ref{fig:zero} below. The starting cell for cozmo is shown as well which specifies the initial position for cozmo. $(x, y, rotation) = (0,0, 0)$. The initial cell is configurable and can be changed in file \textit{map.json} where \textit{startRow}  and \textit{startColumn} specify the initial cell.
+\begin{verbatim}
+python cozmo_client.py
+\end{verbatim}
 
 \begin{figure}[H]
 \center
@@ -318,19 +321,19 @@ Then run the the following command to train the model
 \begin{verbatim}
 run('train_network.m')
 \end{verbatim}
-Finally to save the trained model save the workspace into a mat file by pressing ``ctrl+s".
+Finally to save the trained model, save the workspace into a mat file by pressing ``ctrl+s".
 \end{enumerate}
 
-\subsection{Programming details}
+\section{Programming details}
 
-The source code of the project is available in github \url{https://github.com/mudathirmahgoub/RobotTaxi}. It is written using programming languages python, javascript and Matlab. The web client source code is located in the directory \textit{app}. Matlab code is located in the directory \textit{matlab}. 
+The source code of this project is available in github \url{https://github.com/mudathirmahgoub/RobotTaxi}. It is written using programming languages python, javascript and Matlab. The web client source code is located in the directory \textit{app}. Matlab code is located in the directory \textit{matlab}. 
 See section \ref{sec:technical} to run the project. 
 
 \section{Acknowledgements and Gratitude}
 
-I appreciate the instructor help  with the idea of this project, and how to tackle many problems arose during its development. I followed the quick start from Flask \url{http://flask.pocoo.org/docs/1.0/quickstart/} in building the server code. I learned d3 from this online course by Chris Behrens \\ \url{https://app.pluralsight.com/library/courses/d3-getting-started/table-of-contents}. I benefited  from a blog named ``Let's Make a Grid with D3.js" by Chuck Grimmett \url{http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html} which helped me in drawing the map and trip requests. The deep learning part is based on a tutorial named ``Get Started with Deep Network Designer" from Matlab \url{https://www.mathworks.com/help/deeplearning/gs/get-started-with-deep-network-designer.html}. I got the idea of how to take images from this github project by Charlie Harrington \url{https://github.com/whatrocks/cozmo-tensorflow/blob/master/cozmo-paparazzi.py}. The cozmo client takes images following the example in class in \url{https://github.com/CozmoRobots/Camera}. 
+I appreciate the instructor help  with the idea of this project, and how to tackle many problems arose during its development. I followed the quick start from Flask \url{http://flask.pocoo.org/docs/1.0/quickstart/} in building the server code. I learned d3 from this online course by Chris Behrens \\ \url{https://app.pluralsight.com/library/courses/d3-getting-started/table-of-contents}. I benefited  from a blog named ``Let's Make a Grid with D3.js" by Chuck Grimmett \url{http://www.cagrimmett.com/til/2016/08/17/d3-lets-make-a-grid.html} which helped me in drawing the map and trip requests. The deep learning part is based on a tutorial named ``Get Started with Deep Network Designer" from Matlab \url{https://www.mathworks.com/help/deeplearning/gs/get-started-with-deep-network-designer.html}. I got the idea of how to take images from this github project by Charlie Harrington \url{https://github.com/whatrocks/cozmo-tensorflow/blob/master/cozmo-paparazzi.py}. The cozmo client takes images following the camera example in the class github repository \url{https://github.com/CozmoRobots/Camera}. 
 
-I also appreciate the help from the community of stackoverflow where I find the answer to many errors I encountered. 
+I also appreciate the help from the community of stackoverflow where I find the answers to many errors I encountered. 
 
 
 \bibliographystyle{plain}
